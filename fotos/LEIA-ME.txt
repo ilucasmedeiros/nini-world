@@ -1,0 +1,25 @@
+COLOQUE AS FOTOS DE VOCÊS NESTA PASTA! 📷❤️
+
+O site procura os arquivos com estes nomes (um por fase):
+
+  1-destinos-cruzados.jpg     (escola / como se conheceram, 2016)
+  2-porta-da-faculdade.jpg    (época em que ia vê-la a pé)
+  3-pedido-de-namoro.jpg      (o primeiro SIM, em São Caetano)
+  4-mudanca-de-curso.jpg      (apoio na mudança de curso / provas)
+  5-pressao-da-faculdade.jpg  (a fase difícil que venceram)
+  6-estagios-lins.jpg         (visitas nos estágios — Lins etc.)
+  7-shows.jpg                 (Guns N' Roses / Bruno Mars)
+  8-apelidos.jpg              (uma foto sua bem "Covalski/Ratão" 😄)
+  9-ribeirao-preto.jpg        (época de Ribeirão Preto)
+  10-aracatuba.jpg            (visitas em Araçatuba — hoje)
+  11-nini.jpg                 (a NINI! 🐶)
+  12-noivado.jpg              (o pedido de noivado)
+  13-rumo-ao-altar.jpg        (vocês dois — rumo ao casamento!)
+
+Dicas:
+- Pode usar .jpg ou .png (se usar .png, atualize o nome no campo
+  "foto" de cada fase, dentro do index.html).
+- Fotos na horizontal ficam melhores (elas são cortadas para
+  caber na janelinha da fase).
+- Enquanto a foto não existir, aparece um quadro "SUA FOTO AQUI"
+  no lugar — o site funciona normalmente sem as fotos.
