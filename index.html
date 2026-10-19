@@ -3,402 +3,212 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>❤ Nossa História — Dia dos Namorados</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+<title>❤ Super Nini World — 2 em 1</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
 :root{
-  --sky1:#5c94fc; --sky2:#9cc6ff;
-  --ground1:#e2954d; --ground2:#b86b2e;
-  --green:#2ea44f; --pipe:#2fb442;
   --ink:#1a1226;
   --gold:#ffd000;
   --pink:#ff7bb1;
+  --cyan:#7ff3ff;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
+html,body{height:100%}
 body{
   font-family:'Press Start 2P', monospace;
-  background:linear-gradient(var(--sky1), var(--sky2) 78%, var(--sky2));
-  color:var(--ink);
+  background:radial-gradient(ellipse at 50% 40%, #1c1038 0%, #0a0616 60%, #000 100%);
+  color:#fff;overflow-x:hidden;
   touch-action:manipulation;
   -webkit-user-select:none; user-select:none;
+  -webkit-tap-highlight-color:transparent;
 }
 .hidden{display:none !important}
+canvas{image-rendering:crisp-edges;image-rendering:pixelated}
 
-/* ===== VIEWPORT / MUNDO ===== */
-#viewport{position:fixed;inset:0;overflow:hidden}
-#far,#world{position:absolute;top:0;bottom:0;left:0;will-change:transform}
-#sun{position:absolute;top:34px;left:60px;width:64px;height:64px;background:#ffe681;border-radius:50%;box-shadow:0 0 0 10px rgba(255,230,129,.35), 0 0 40px 18px rgba(255,230,129,.5)}
-#ground{
-  position:absolute;left:0;bottom:0;width:100%;height:120px;
+/* ===== CRT ===== */
+#crt{
+  position:fixed;inset:0;pointer-events:none;z-index:20;
   background:
-    repeating-linear-gradient(90deg, rgba(0,0,0,.14) 0 3px, transparent 3px 40px),
-    repeating-linear-gradient(0deg, rgba(0,0,0,.14) 0 3px, transparent 3px 40px),
-    linear-gradient(var(--ground1), var(--ground2));
-  border-top:5px solid #2f7d3a;
-  box-shadow:inset 0 8px 0 #45c45a;
+    repeating-linear-gradient(0deg, rgba(0,0,0,.25) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.7) 100%);
+  animation:flicker 4s steps(1) infinite;
 }
+@keyframes flicker{0%,100%{opacity:1}47%{opacity:.93}48%{opacity:1}}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{position:absolute;width:2px;height:2px;background:#fff;animation:tw 2s steps(2) infinite}
+@keyframes tw{50%{opacity:.15}}
 
-/* ===== NUVENS / MORROS / ARBUSTOS / CANOS ===== */
-.cloud{position:absolute;width:92px;height:30px;background:#fff;border-radius:30px}
-.cloud::before{content:"";position:absolute;left:14px;top:-20px;width:42px;height:42px;background:#fff;border-radius:50%}
-.cloud::after{content:"";position:absolute;right:14px;top:-13px;width:30px;height:30px;background:#fff;border-radius:50%}
-.hill{position:absolute;bottom:118px;background:var(--green);border-radius:50% 50% 0 0;box-shadow:inset -14px -10px 0 rgba(0,0,0,.12)}
-.bush{position:absolute;bottom:120px;height:30px;background:#3fc94f;border-radius:16px;box-shadow:inset 0 -8px 0 rgba(0,0,0,.15)}
-.pipe{position:absolute;bottom:120px;width:62px;height:64px;background:linear-gradient(90deg,#1d8a30,#7ce95f 38%,#1d8a30);border:3px solid #0c4a14;border-radius:3px}
-.pipe::before{content:"";position:absolute;top:-26px;left:-10px;right:-10px;height:26px;background:linear-gradient(90deg,#1d8a30,#7ce95f 38%,#1d8a30);border:3px solid #0c4a14;border-radius:4px}
-
-/* ===== MOEDAS ===== */
-.coin{position:absolute;width:20px;height:28px;background:var(--gold);border:3px solid #8a5a00;border-radius:50%;box-shadow:inset 4px 0 0 #fff3b0;animation:coinbob 1.2s ease-in-out infinite}
-.coin::after{content:"";position:absolute;inset:5px 6px;border-radius:50%;border:2px solid #c98f00}
-@keyframes coinbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-.coin.got{animation:coinget .45s ease-out forwards}
-@keyframes coinget{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-70px) scale(.4);opacity:0}}
-
-/* ===== CHECKPOINTS ===== */
-.checkpoint{position:absolute;bottom:120px;width:60px;cursor:pointer}
-.cp-emoji{position:absolute;bottom:178px;left:50%;transform:translateX(-50%);font-size:28px;animation:bob 1.6s ease-in-out infinite;filter:drop-shadow(2px 3px 0 rgba(0,0,0,.25))}
-@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-10px)}}
-.cp-block{
-  position:absolute;bottom:110px;left:50%;transform:translateX(-50%);
-  width:54px;height:54px;background:#ffa928;border:4px solid #7a4a00;
-  box-shadow:inset -7px -7px 0 #d97f00, inset 7px 7px 0 #ffd28a;
-  display:flex;align-items:center;justify-content:center;
-  font-size:24px;color:#7a4a00;
-}
-.checkpoint.visited .cp-block{background:#c96f5a;box-shadow:inset -7px -7px 0 #9c4a38, inset 7px 7px 0 #eda08c;color:#fff}
-.checkpoint.next .cp-block{animation:blink .9s steps(2) infinite}
-@keyframes blink{50%{filter:brightness(1.35)}}
-.cp-label{
-  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
-  background:#fff;border:3px solid var(--ink);padding:5px 7px;font-size:9px;white-space:nowrap;
-  box-shadow:3px 3px 0 rgba(0,0,0,.3);
-}
-
-/* ===== CASTELO ===== */
-#castle{position:absolute;bottom:120px;width:320px;height:300px}
-.cs-brick{
-  background-image:
-    repeating-linear-gradient(0deg, rgba(0,0,0,.13) 0 3px, transparent 3px 26px),
-    repeating-linear-gradient(90deg, rgba(0,0,0,.13) 0 3px, transparent 3px 34px);
-}
-#castle .body{position:absolute;bottom:0;left:36px;width:248px;height:150px;background-color:#aeb6c2}
-#castle .body::before{content:"";position:absolute;top:-22px;left:0;right:0;height:22px;background:repeating-linear-gradient(90deg,#aeb6c2 0 26px,transparent 26px 52px)}
-#castle .tower{position:absolute;bottom:0;width:62px;background-color:#c4ccd8}
-#castle .tower::before{content:"";position:absolute;top:-20px;left:-4px;right:-4px;height:20px;background:repeating-linear-gradient(90deg,#c4ccd8 0 18px,transparent 18px 36px)}
-#castle .t-left{left:0;height:210px}
-#castle .t-right{right:0;height:210px}
-#castle .t-mid{left:50%;transform:translateX(-50%);width:84px;height:280px;background-color:#cdd5e0}
-#castle .t-mid::before{content:"";position:absolute;top:-22px;left:-5px;right:-5px;height:22px;background:repeating-linear-gradient(90deg,#cdd5e0 0 20px,transparent 20px 40px)}
-#castle .door{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:64px;height:90px;background:#170f2b;border-radius:32px 32px 0 0;z-index:3}
-#castle .win{position:absolute;width:18px;height:26px;background:#170f2b;border-radius:9px 9px 0 0}
-#castle .pwindow{
-  position:absolute;top:36px;left:50%;transform:translateX(-50%);
-  width:46px;height:58px;background:#241640;border:4px solid #6f7a8a;border-radius:20px 20px 0 0;
-  overflow:hidden;display:flex;align-items:flex-end;justify-content:center;z-index:4;
-}
-#castle .flagpole{position:absolute;top:-66px;left:50%;width:5px;height:66px;background:#3c3c3c;z-index:5}
-#castle .flag{position:absolute;top:0;left:5px;width:0;height:0;border-top:14px solid transparent;border-bottom:14px solid transparent;border-left:34px solid var(--pink);animation:wave 1s ease-in-out infinite}
-@keyframes wave{50%{transform:scaleX(.85)}}
-.bubble{
-  position:absolute;top:-46px;left:50%;transform:translateX(-50%);
-  background:#fff;border:3px solid var(--ink);padding:7px 9px;font-size:8px;white-space:nowrap;
-  border-radius:6px;box-shadow:3px 3px 0 rgba(0,0,0,.3);animation:bob2 1.4s ease-in-out infinite;z-index:6;
-}
-.bubble::after{content:"";position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top:6px solid #fff}
-@keyframes bob2{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-6px)}}
-
-/* ===== SPRITES (pixel art) ===== */
-.sprite-wrap{position:relative;overflow:visible}
-.pxs{position:absolute;left:0;top:0;background:transparent}
-#player{position:absolute;bottom:120px;width:48px;height:64px;z-index:8}
-#player.jump{animation:jump .55s cubic-bezier(.3,0,.2,1)}
-@keyframes jump{0%{transform:translateY(0)}42%{transform:translateY(-72px)}100%{transform:translateY(0)}}
-.heart-pop{position:absolute;font-size:24px;z-index:9;animation:hpop .9s ease-out forwards;pointer-events:none}
-@keyframes hpop{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-90px);opacity:0}}
-
-/* ===== HUD ===== */
-#hud{
-  position:fixed;top:0;left:0;right:0;z-index:10;
-  display:flex;justify-content:space-between;gap:8px;
-  padding:14px 18px;font-size:11px;color:#fff;
-  text-shadow:2px 2px 0 rgba(0,0,0,.55);
-}
-#hud span{white-space:nowrap}
-.inf{font-family:'VT323',monospace;font-size:1.6em;line-height:0;vertical-align:-2px}
-
-/* ===== CONTROLES ===== */
-#controls{position:fixed;bottom:18px;left:0;right:0;z-index:10;display:flex;flex-direction:column;align-items:center;gap:10px}
-#hint{font-size:8px;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.5)}
-.btn{
-  font-family:'Press Start 2P',monospace;font-size:13px;cursor:pointer;
-  background:var(--gold);color:#5a3a00;border:4px solid var(--ink);
-  padding:16px 26px;box-shadow:0 6px 0 var(--ink);
-  transition:transform .06s, box-shadow .06s;
-}
-.btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink)}
-.btn:disabled{opacity:.55;cursor:default}
-.btn.love{background:var(--pink);color:#5e0f2e}
-
-/* ===== INTRO ===== */
-#intro{
-  position:fixed;inset:0;z-index:70;background:#000;
+/* ===== LAYOUT ===== */
+#app{
+  position:relative;z-index:1;min-height:100%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
-  text-align:center;color:#fff;padding:20px;
+  padding:28px 16px 70px;text-align:center;
 }
-#intro .world{color:var(--gold);font-size:12px;letter-spacing:2px}
-#intro h1{font-size:clamp(20px,5vw,40px);color:var(--pink);text-shadow:4px 4px 0 #6d1136;line-height:1.5}
-#intro .names{font-size:clamp(10px,2.6vw,16px);line-height:1.8}
-#intro .sub{font-family:'VT323',monospace;font-size:22px;color:#bbb}
-#intro .press{font-size:10px;color:var(--gold);animation:blink2 1.1s steps(2) infinite}
-@keyframes blink2{50%{opacity:0}}
-#intro footer{position:absolute;bottom:18px;font-size:8px;color:#666}
+.logo{line-height:1.25}
+.logo .super{display:block;font-size:clamp(11px,2.6vw,16px);color:var(--cyan);letter-spacing:6px;text-shadow:2px 2px 0 #062a3a;margin-bottom:10px}
+.logo .big{
+  display:block;font-size:clamp(26px,7.4vw,58px);letter-spacing:2px;
+  background:linear-gradient(#fff7b0 0%,#ffd23f 30%,#ff8a1f 55%,#ff4f7a 80%,#b44dff 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(4px 4px 0 #2a0610);
+}
+.subtitle{font-size:clamp(9px,2.3vw,13px);color:#fff;letter-spacing:2px}
+.subtitle b{color:var(--gold);font-weight:normal}
 
-/* ===== MODAL (fase) ===== */
-#modal{position:fixed;inset:0;z-index:50;background:rgba(10,5,25,.72);display:flex;align-items:center;justify-content:center;padding:16px}
-.modal-card{
-  width:min(460px,94vw);max-height:92vh;overflow:auto;background:#fdf3e3;
-  border:5px solid var(--ink);box-shadow:10px 10px 0 rgba(0,0,0,.45);
-  padding:18px;display:flex;flex-direction:column;gap:11px;
+/* ===== CARTUCHOS ===== */
+.carts{display:flex;gap:44px;flex-wrap:wrap;justify-content:center;align-items:flex-end}
+.slot{position:relative;padding-left:30px}
+.cursor{position:absolute;left:0;top:50%;transform:translateY(-50%);font-size:20px;color:var(--gold);visibility:hidden;animation:blink .6s steps(2) infinite}
+.slot.sel .cursor{visibility:visible}
+@keyframes blink{50%{opacity:0}}
+.cart{
+  position:relative;width:min(290px,78vw);cursor:pointer;
+  background:linear-gradient(90deg,#77778a,#a3a3b4 18%,#9494a6 82%,#6c6c80);
+  border:4px solid var(--ink);border-radius:12px 12px 4px 4px;
+  padding:30px 14px 14px;
+  box-shadow:0 8px 0 var(--ink), inset 0 4px 0 rgba(255,255,255,.3), inset 0 -6px 0 rgba(0,0,0,.25);
+  transition:transform .15s, filter .15s;filter:brightness(.82) saturate(.8);
 }
-.m-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-#mWorld{font-size:11px;color:#7a5a2e}
-.badge{font-size:8px;padding:6px 8px;border:3px solid var(--ink);box-shadow:2px 2px 0 rgba(0,0,0,.3)}
-.badge.conquista{background:var(--gold);color:#5a3a00}
-.badge.desafio{background:#ff5a4e;color:#fff}
-.badge.inicio{background:#58c46b;color:#0c3a16}
-.badge.atual{background:#7b6cff;color:#fff}
-.badge.bonus{background:#5fd4e8;color:#0a3a44}
-#mTitle{font-size:15px;line-height:1.5;color:var(--ink)}
-#mDate{font-family:'VT323',monospace;font-size:20px;color:#8a6a3a}
-.m-photo{position:relative;width:100%;height:180px;border:4px solid var(--ink);background:#cdbfa4;overflow:hidden;flex:none}
-.m-photo img{display:none;width:100%;height:100%;object-fit:cover}
-.ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:10px;color:#6f5c39;background:repeating-linear-gradient(45deg,#d8c9ab 0 16px,#cdbfa4 16px 32px)}
-.ph-e{font-size:40px}
-#mText{font-family:'VT323',monospace;font-size:22px;line-height:1.35;color:#3a2c14;white-space:pre-line}
-#mBtn{align-self:center}
-
-/* ===== FINAL ===== */
-#flash{position:fixed;inset:0;z-index:55;background:#fff;opacity:0;pointer-events:none;transition:opacity .5s}
-#flash.on{opacity:1}
-#ending{position:fixed;inset:0;z-index:60;background:radial-gradient(ellipse at 50% 110%, #3b1d5e, #120a23 70%);display:flex;align-items:center;justify-content:center;overflow:hidden}
-#fx{position:absolute;inset:0}
-.end-box{
-  position:relative;z-index:2;text-align:center;color:#fff;
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  padding:18px;max-width:680px;max-height:96vh;overflow:auto;
+.cart::before{
+  content:"";position:absolute;top:9px;left:34px;right:34px;height:11px;border-radius:3px;
+  background:repeating-linear-gradient(90deg,#5d5d70 0 5px,#b4b4c4 5px 9px);
 }
-.end-box > *{flex:none}
-.end-sprites{display:flex;align-items:flex-end;gap:26px}
-.end-heart{font-size:34px;animation:pulse 1s ease-in-out infinite}
+.slot.sel .cart{transform:translateY(-12px);filter:none;box-shadow:0 8px 0 var(--ink), 0 0 0 4px var(--gold), 0 0 34px rgba(255,208,0,.35), inset 0 4px 0 rgba(255,255,255,.3), inset 0 -6px 0 rgba(0,0,0,.25)}
+.label{
+  position:relative;height:168px;border:4px solid var(--ink);overflow:hidden;
+  display:flex;align-items:flex-end;justify-content:center;gap:10px;padding-bottom:30px;
+}
+.label .ltitle{
+  position:absolute;top:10px;left:0;right:0;font-size:12px;line-height:1.4;
+  color:#fff;text-shadow:3px 3px 0 var(--ink),-1px -1px 0 var(--ink);
+}
+/* rótulo 1: céu, chão e castelo */
+.l1{background:linear-gradient(#5c94fc,#9cc6ff 80%)}
+.l1::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:30px;
+  background:repeating-linear-gradient(90deg, rgba(0,0,0,.15) 0 2px, transparent 2px 20px),linear-gradient(#e2954d,#b86b2e);
+  border-top:4px solid #2f7d3a;
+}
+.l1 .cloud{position:absolute;top:58px;left:20px;width:46px;height:14px;background:#fff;border-radius:14px}
+.l1 .cloud::before{content:"";position:absolute;left:8px;top:-9px;width:20px;height:20px;background:#fff;border-radius:50%}
+.l1 .cloud.c2{left:auto;right:18px;top:70px;transform:scale(.8)}
+/* rótulo 2: fogo de luta */
+.l2{background:radial-gradient(ellipse at 50% 100%, #ffd23f 0%, #ff8a1f 30%, #e8283c 60%, #3a0a3e 100%)}
+.l2::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:30px;
+  background:repeating-linear-gradient(90deg,#3a3842 0 18px,#4a4652 18px 20px);
+  border-top:4px solid #22202a;
+}
+.l2 .vs{font-size:20px;color:#ffd23f;text-shadow:3px 3px 0 #a01830,-1px -1px 0 #000;align-self:center;margin-bottom:-10px}
+.label canvas,.label .spr{position:relative;z-index:1}
+.heart{font-size:20px;align-self:center;margin-bottom:6px;z-index:1;animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(1.25)}}
-.end-box h1{font-size:clamp(12px,3vw,19px);color:var(--gold);line-height:1.7;text-shadow:3px 3px 0 #6d4a00}
-.end-box h2{font-size:clamp(16px,4vw,26px);color:var(--pink);line-height:1.6;text-shadow:4px 4px 0 #6d1136}
-#endMsg{font-family:'VT323',monospace;font-size:clamp(17px,2.6vw,21px);line-height:1.3;color:#ffe9f3;min-height:50px;max-width:560px;white-space:pre-line;text-align:center}
-.end-stats{font-size:9px;color:#cbb6e8;line-height:1.8}
-.float-heart{position:absolute;bottom:-40px;font-size:22px;animation:rise linear forwards;z-index:1}
-@keyframes rise{to{transform:translateY(-110vh);opacity:0}}
+.badge{
+  position:absolute;top:-14px;right:-14px;z-index:3;font-size:9px;padding:7px 8px;
+  background:#ff3b3b;border:3px solid var(--ink);box-shadow:3px 3px 0 rgba(0,0,0,.4);
+  transform:rotate(8deg);animation:badge .7s steps(2) infinite;
+}
+@keyframes badge{50%{background:var(--gold);color:var(--ink)}}
+.sticker{margin-top:12px;background:#f4ecd8;border:3px solid var(--ink);padding:9px 8px;color:var(--ink)}
+.sticker .t{font-size:11px;line-height:1.5}
+.sticker .m{font-family:'VT323',monospace;font-size:19px;color:#6b5a8e;margin-top:4px}
 
-@media (max-width:600px){
-  #hud{font-size:8px;padding:10px}
-  .btn{font-size:11px;padding:14px 18px}
-  #mTitle{font-size:12px}
-  .m-photo{height:150px}
+.hint{font-size:8px;color:#9d8cc4;line-height:2}
+.k{font-family:"VT323",monospace;font-size:17px;line-height:0;vertical-align:-1px;color:var(--gold)}
+.press{font-size:10px;color:var(--gold);animation:blink 1.1s steps(2) infinite}
+footer{position:fixed;bottom:12px;left:0;right:0;z-index:2;text-align:center;font-size:8px;color:#6b5a8e}
+footer b{color:var(--pink);font-weight:normal}
+
+#flash{position:fixed;inset:0;z-index:30;background:#fff;opacity:0;pointer-events:none;transition:opacity .35s}
+#flash.on{opacity:1}
+#loading{position:fixed;inset:0;z-index:31;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink);pointer-events:none}
+
+@media (max-width:700px){
+  .carts{gap:30px}
+  .label{height:150px}
 }
 </style>
 </head>
 <body>
+<div id="stars"></div>
+<div id="crt"></div>
 
-<!-- TELA INICIAL -->
-<div id="intro">
-  <div class="world">MUNDO ❤-1</div>
-  <h1>NOSSA<br>HISTÓRIA</h1>
-  <div class="names" id="introNames">JOGADOR 1 ❤ JOGADORA 2</div>
-  <div class="sub">Uma história que começou sem querer e virou a mais importante da minha vida.</div>
-  <button class="btn" id="btnStart">▶ START</button>
-  <div class="press">FELIZ DIA DOS NAMORADOS</div>
-  <footer>© 2026 — FEITO COM CARINHO · PLAYER 1 E PLAYER 2 DESDE 2016</footer>
-</div>
+<div id="app">
+  <h1 class="logo">
+    <span class="super">SUPER</span>
+    <span class="big">NINI WORLD</span>
+  </h1>
+  <div class="subtitle"><b>2 EM 1</b> · SELECIONE O JOGO</div>
 
-<!-- HUD -->
-<div id="hud" class="hidden">
-  <span id="hudName">LUCAS ❤×0</span>
-  <span id="hudWorld">MUNDO ❤-1</span>
-  <span>TEMPO <span class="inf">∞</span></span>
-</div>
-
-<!-- MUNDO -->
-<div id="viewport">
-  <div id="far"><div id="sun"></div></div>
-  <div id="world"><div id="ground"></div></div>
-</div>
-
-<!-- CONTROLES -->
-<div id="controls" class="hidden">
-  <div id="hint">USE O BOTÃO, A SETA → OU ESPAÇO</div>
-  <button class="btn" id="btnNext">▶ AVANÇAR</button>
-</div>
-
-<!-- MODAL DE FASE -->
-<div id="modal" class="hidden">
-  <div class="modal-card">
-    <div class="m-top"><span id="mWorld"></span><span id="mBadge" class="badge"></span></div>
-    <h2 id="mTitle"></h2>
-    <div id="mDate"></div>
-    <div class="m-photo">
-      <img id="mImg" alt="foto da fase">
-      <div class="ph" id="mPh"><span class="ph-e">📷</span><span>SUA FOTO AQUI</span></div>
+  <div class="carts">
+    <div class="slot sel" data-href="namorados.html">
+      <span class="cursor">▶</span>
+      <div class="cart">
+        <div class="label l1">
+          <span class="ltitle">NOSSA<br>HISTÓRIA</span>
+          <div class="cloud"></div><div class="cloud c2"></div>
+          <canvas id="sprHero"></canvas>
+          <span class="heart">💖</span>
+          <canvas id="sprPrincess"></canvas>
+        </div>
+        <div class="sticker">
+          <div class="t">DIA DOS NAMORADOS</div>
+          <div class="m">AVENTURA · 1 JOGADOR</div>
+        </div>
+      </div>
     </div>
-    <p id="mText"></p>
-    <button class="btn" id="mBtn">CONTINUAR ▶</button>
+
+    <div class="slot" data-href="aniversario.html">
+      <span class="cursor">▶</span>
+      <div class="cart">
+        <span class="badge">NOVO!</span>
+        <div class="label l2">
+          <span class="ltitle">NINI<br>FIGHTER II</span>
+          <canvas id="sprNini"></canvas>
+          <span class="vs">VS</span>
+          <canvas id="sprChat"></canvas>
+        </div>
+        <div class="sticker">
+          <div class="t">EDIÇÃO ANIVERSÁRIO</div>
+          <div class="m">LUTA · 1 JOGADOR</div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div class="press" id="press">APERTE START</div>
+  <div class="hint" id="hint"><span class="k">← →</span> ESCOLHER · ENTER JOGAR</div>
 </div>
 
-<!-- FINAL -->
+<footer>© 2026 <b>LUCAS ❤ RAQUEL</b> · INSERT COIN</footer>
 <div id="flash"></div>
-<div id="ending" class="hidden">
-  <canvas id="fx"></canvas>
-  <div class="end-box">
-    <div class="end-sprites" id="endSprites"></div>
-    <h1 id="endH1">VOCÊ RESGATOU A PRINCESA!</h1>
-    <h2>❤ FELIZ DIA DOS<br>NAMORADOS ❤</h2>
-    <p id="endMsg"></p>
-    <div class="end-stats" id="endStats"></div>
-    <button class="btn love" onclick="location.reload()">JOGAR DE NOVO ❤</button>
-  </div>
-</div>
+<div id="loading" class="hidden">CARREGANDO...</div>
 
 <script>
-/* ============================================================
-   💕💕💕  EDITE AQUI A HISTÓRIA DE VOCÊS  💕💕💕
-
-   1. Troque os nomes em "jogador" e "princesa".
-   2. Cada item de "fases" é uma parada no mapa:
-        mundo  -> o numerozinho da fase (ex: "1-1")
-        tipo   -> "inicio", "conquista", "desafio" (superado),
-                  "atual" (em andamento) ou "bonus" (fase especial)
-        emoji  -> aparece flutuando no mapa
-        titulo -> nome da fase
-        data   -> quando aconteceu
-        foto   -> caminho da foto (coloque os arquivos na pasta "fotos/")
-        foco   -> ponto da foto que fica visível no corte
-                  ("50% 0%" = topo, "50% 50%" = centro...)
-        texto  -> a história dessa fase, do seu jeito
-   3. Pode adicionar ou remover fases à vontade —
-      o mapa se ajusta sozinho!
-   ============================================================ */
-const CONFIG = {
-  jogador: "LUCAS",
-  princesa: "RAQUEL",
-
-  mensagemFinal: "Raquel,\n\n" +
-    "Quando olho para trás, vejo o quanto a gente já viveu — algumas fases fáceis, outras nem tanto. Mesmo com todas as batalhas, o que mais importa é sermos felizes juntos. E é isso que eu quero continuar construindo com você.\n\n" +
-    "Ainda existem fases para passar e desafios para vencer, mas a certeza continua a mesma: vale a pena viver tudo isso ao seu lado.\n\n" +
-    "Eu te amo. E as melhores fases da nossa história ainda estão por vir.\n\n❤",
-
-  fases: [
-    {
-      mundo: "1-1", tipo: "inicio", emoji: "👀",
-      titulo: "Destinos Cruzados",
-      data: "São Caetano do Sul, 2016",
-      foto: "fotos/1-destinos-cruzados.jpg", foco: "50% 14%",
-      texto: "A gente estudava na mesma escola, mas foi só em 2016 que realmente nos encontramos. Você já estava ali o tempo todo — e eu nem imaginava que tinha acabado de encontrar a pessoa que estaria comigo em todas as próximas fases."
-    },
-    {
-      mundo: "1-2", tipo: "conquista", emoji: "🚶",
-      titulo: "A Porta da Faculdade",
-      data: "Os primeiros tempos",
-      foto: "fotos/2-porta-da-faculdade.jpg", foco: "60% 35%",
-      texto: "A gente morava perto, e eu adorava ir te encontrar na saída da faculdade. Era algo simples, mas virou uma das minhas partes favoritas do dia. Qualquer caminhada valia a pena quando terminava vendo você."
-    },
-    {
-      mundo: "1-3", tipo: "conquista", emoji: "💍",
-      titulo: "O Pedido de Namoro",
-      data: "O primeiro SIM",
-      foto: "fotos/3-pedido-de-namoro.jpg", foco: "50% 12%",
-      texto: "NOVO NÍVEL DESBLOQUEADO!\n\nAntes do pedido, teve uma fase importante: conhecer seus pais e mostrar que eu estava ali pra ficar. Eu já sabia o que queria, mas esperei você se sentir segura. E quando o dia chegou, veio o primeiro SIM da nossa história — que a gente continua escrevendo até hoje."
-    },
-    {
-      mundo: "1-4", tipo: "conquista", emoji: "📚",
-      titulo: "Sempre no Seu Time",
-      data: "A mudança de curso",
-      foto: "fotos/4-mudanca-de-curso.jpg", foco: "55% 15%",
-      texto: "Quando você decidiu mudar de curso, eu sabia exatamente qual era meu papel: te apoiar. Fui com você nas provas, acompanhei suas dúvidas, suas decisões e suas conquistas."
-    },
-    {
-      mundo: "2-1", tipo: "desafio", emoji: "🌧️",
-      titulo: "A Pressão da Faculdade",
-      data: "Uma época difícil",
-      foto: "fotos/5-pressao-da-faculdade.jpg", foco: "50% 25%",
-      texto: "Nem tudo foi fácil. A faculdade trouxe pressão, desgaste e momentos em que a gente se perdeu pelo caminho. Mas sempre tinha algo que fazia a gente voltar — e cada dificuldade só mostrou que o nosso relacionamento era maior do que os problemas."
-    },
-    {
-      mundo: "2-2", tipo: "conquista", emoji: "🧳",
-      titulo: "Te Encontrando pelo Mapa",
-      data: "Época dos estágios",
-      foto: "fotos/6-estagios-lins.jpg", foco: "50% 45%",
-      texto: "Vieram os estágios, as viagens, as cidades diferentes... e eu sempre dava um jeito de aparecer. Lins, Araçatuba. O importante era estar com você."
-    },
-    {
-      mundo: "2-3", tipo: "conquista", emoji: "🐴",
-      titulo: "Os Mil Nomes do Herói",
-      data: "Desde sempre",
-      foto: "fotos/8-apelidos.jpg", foco: "47% 40%",
-      texto: "Covalski. Ratão. Tovalstinho. Cavalo. Ninê.\n\nSão muitos apelidos e cada um mostra uma fase nossa."
-    },
-    {
-      mundo: "3-1", tipo: "desafio", emoji: "🏙️",
-      titulo: "Mundo Novo: Ribeirão Preto",
-      data: "Antes de Araçatuba",
-      foto: "fotos/9-ribeirao-preto.jpg", foco: "50% 28%",
-      texto: "Quando você foi morar em Ribeirão Preto, a saudade começou a fazer parte da rotina. Entre visitas, chamadas e contagem regressiva para o próximo encontro, seguimos em frente."
-    },
-    {
-      mundo: "3-2", tipo: "atual", emoji: "🚗",
-      titulo: "O Chefão da Distância: Araçatuba",
-      data: "Hoje",
-      foto: "fotos/10-aracatuba.jpg", foco: "42% 30%",
-      texto: "Agora o mapa ficou maior e a distância também. Cada viagem continua valendo a pena. Cada despedida continua difícil. E cada reencontro continua sendo uma das melhores partes do mês."
-    },
-    {
-      mundo: "3-3", tipo: "conquista", emoji: "🎸",
-      titulo: "Shows dos Sonhos",
-      data: "Guns N' Roses · Bruno Mars",
-      foto: "fotos/7-shows.jpg", foco: "50% 32%",
-      texto: "Você queria muito viver esses momentos, e eu tive a sorte de estar do seu lado para ver tudo acontecer. Entre músicas, gritos e vídeos, ficaram algumas das lembranças que construímos juntos."
-    },
-    {
-      mundo: "3-4", tipo: "bonus", emoji: "🐶",
-      titulo: "NINI",
-      data: "A mascote do nosso reino",
-      foto: "fotos/11-nini.jpg", foco: "50% 45%",
-      texto: "Nini não precisa de descrição, porque Nini é tudo!"
-    },
-    {
-      mundo: "3-5", tipo: "conquista", emoji: "💎",
-      titulo: "O Pedido de Noivado",
-      data: "O dia do SIM nível 2",
-      foto: "fotos/12-noivado.jpg", foco: "50% 72%",
-      texto: "CONQUISTA ÉPICA DESBLOQUEADA!\n\nDepois de tudo que já vivemos, chegou a hora de dar mais um passo. Porque eu tenho certeza do quanto te amo — e de que quero construir o futuro dessa história com você."
-    },
-    {
-      mundo: "3-6", tipo: "atual", emoji: "⚔️",
-      titulo: "O Último Chefão: Rumo ao Altar",
-      data: "Em andamento...",
-      foto: "fotos/13-rumo-ao-altar.jpg", foco: "50% 95%",
-      texto: "Eu sei que nem tudo está como você imaginou, e que eu falhei em algumas coisas — principalmente na parte financeira. Mas eu não estou desistindo desse objetivo.\n\nVou construir o que faltou, do mesmo jeito que enfrentamos todas as outras fases: um passo de cada vez. Porque o meu objetivo continua o mesmo: construir a nossa vida juntos."
+// ---------- pixel-art (mesmos grids dos jogos) ----------
+const sym = rows => rows.map(r => r + [...r].reverse().join(""));
+function drawGrid(x, grid, pal, gx, gy, px){
+  grid.forEach((row, r) => {
+    for (let i = 0; i < row.length; i++){
+      const ch = row[i];
+      if (ch === ".") continue;
+      const col = pal[ch];
+      if (!col) continue;
+      x.fillStyle = col;
+      x.fillRect((gx+i)*px, (gy+r)*px, px, px);
     }
-  ]
-};
-/* ============================================================
-   FIM DA PARTE EDITÁVEL — daqui pra baixo é o motor do jogo 🎮
-   ============================================================ */
+  });
+}
+function sprite(id, parts, w, h, px, flipX){
+  const c = document.getElementById(id), x = c.getContext("2d");
+  c.width = w*px; c.height = h*px;
+  if (flipX){ x.translate(c.width, 0); x.scale(-1, 1); }
+  parts.forEach(([grid, pal, gx, gy]) => drawGrid(x, grid, pal, gx, gy, px));
+}
 
-// ---------- sprites pixel-art ----------
-// LUCAS: cabelo castanho escuro, óculos de armação preta,
-// camiseta preta, calça jeans
+// LUCAS e a PRINCESA (do jogo "Nossa História")
 const HERO_A = [
 "...HHHHHH...",
 "..HHHHHHHH..",
@@ -415,17 +225,8 @@ const HERO_A = [
 "...DDDDDD...",
 "...DD..DD...",
 "...DD..DD...",
-"..KKK..KKK.."
-];
-const HERO_B = HERO_A.slice(0,13).concat([
-"..DD....DD..",
-".DDD....DDD.",
-".KKK....KKK."
-]);
+"..KKK..KKK.."];
 const HERO_PAL = {H:"#3a2817", S:"#ffc7a0", K:"#20232a", T:"#2e2e38", D:"#3566c4", W:"#e8f2fa", M:"#d99873"};
-
-// RAQUEL: coroa dourada, cabelo castanho longo, óculos,
-// argolas douradas e vestido de princesa
 const PRINCESS = [
 "...Y.YY.Y...",
 "...YYYYYY...",
@@ -442,399 +243,132 @@ const PRINCESS = [
 "..PPPPPPPP..",
 ".PPPPPPPPPP.",
 ".PPPPPPPPPP.",
-"PPPPPPPPPPPP"
-];
+"PPPPPPPPPPPP"];
 const PRINCESS_PAL = {Y:"#ffd400", H:"#3a2817", S:"#ffc7a0", K:"#20232a", R:"#e0436b", P:"#ff7bb1", W:"#e8f2fa"};
 
-function gridShadow(grid, pal, px){
-  const out = [];
-  grid.forEach((row, y) => {
-    [...row].forEach((ch, x) => {
-      if (ch !== ".") out.push(((x+1)*px) + "px " + ((y+1)*px) + "px 0 " + pal[ch]);
-    });
-  });
-  return out.join(",");
-}
-function makeSprite(grid, pal, px){
-  const wrap = document.createElement("div");
-  wrap.className = "sprite-wrap";
-  wrap.style.width  = (grid[0].length*px) + "px";
-  wrap.style.height = (grid.length*px) + "px";
-  const d = document.createElement("div");
-  d.className = "pxs";
-  d.style.width = px+"px"; d.style.height = px+"px";
-  d.style.marginLeft = (-px)+"px"; d.style.marginTop = (-px)+"px";
-  d.style.boxShadow = gridShadow(grid, pal, px);
-  wrap.appendChild(d);
-  return wrap;
-}
+// NINI e CHATINHA (do jogo "Nini Fighter II")
+const NINI_PAL = {o:"#1b1519", L:"#d9d2c5", l:"#a89f92", m:"#b9a890", a:"#5a534b", g:"#6e675f", G:"#403b37",
+  E:"#0d0b0e", e:"#ffffff", N:"#141214", T:"#fffaf0", M:"#5a1420"};
+const NINI_HEAD = sym([
+"......ooooo",
+"....ooLlLLL",
+"...oLLLLLLL",
+"..oLLLLlLLL",
+".oGLLLLLLLL",
+"oGgLLLLLLLL",
+"oGglaaaLLLL",
+"oGgaEEeaLLL",
+"oGgaEEEalLL",
+"oGglaaalLLL",
+"oGgglLLLlLN",
+"oGgglLLmlNN",
+"oGGgglmmlTT",
+"oGGgglmmmMM",
+"oGGGgolmmmm",
+".oGGGoommmm",
+"..oGGo.oomm",
+"...oo....oo"]);
+const CH_PAL = {o:"#050407", L:"#4a4654", l:"#35323d", m:"#3b3844", a:"#141318", g:"#26242c", G:"#18171c",
+  e:"#ffffff", R:"#ff2d4a", N:"#000000", T:"#fffaf0", M:"#5a1420", B:"#ff3d6a", b:"#a8173a"};
+// chatinha: a mesma shih-tzu, toda pretinha, brava e de lacinho
+const CHAT_HEAD = sym([
+"......ooooo",
+"....ooLlLLL",
+"...oLLLLLLL",
+"..oLLLLlLLL",
+".oGLLLLLLLL",
+"oGgooLLLLLL",
+"oGglLoooLLL",
+"oGgaRReaLLL",
+"oGgaRRRalLL",
+"oGglaaalLLL",
+"oGgglLLLlLN",
+"oGgglLLmlNN",
+"oGGgglmmlTT",
+"oGGgglmmmMM",
+"oGGGgolmmmm",
+".oGGGoommmm",
+"..oGGo.oomm",
+"...oo....oo"]);
+const BOW = ["oo...oo", "oBo.oBo", "obBoBbo", "oBo.oBo", "oo...oo"];
 
-// ---------- constantes do mundo ----------
-const FASES = CONFIG.fases;
-const PXP = 4, GROUND = 120, START_X = 170, GAP = 430, CASTLE_GAP = 540;
-const cpX = i => START_X + GAP*(i+1);
-const castleX = cpX(FASES.length-1) + CASTLE_GAP;
-const doorX = castleX + 160 - 24;
-const worldW = castleX + 560;
+sprite("sprHero", [[HERO_A, HERO_PAL, 0, 0]], 12, 16, 5);
+sprite("sprPrincess", [[PRINCESS, PRINCESS_PAL, 0, 0]], 12, 16, 5);
+sprite("sprNini", [[NINI_HEAD, NINI_PAL, 0, 0]], 22, 18, 4);
+sprite("sprChat", [[CHAT_HEAD, CH_PAL, 0, 3], [BOW, CH_PAL, 8, 0]], 22, 21, 4, true);
 
-const world = document.getElementById("world");
-const far = document.getElementById("far");
-world.style.width = worldW + "px";
-far.style.width = worldW + "px";
-
-// ---------- decoração ----------
-function el(cls, styles){
-  const d = document.createElement("div");
-  d.className = cls;
-  Object.assign(d.style, styles);
-  return d;
-}
-for (let x = 120; x < worldW; x += 200 + Math.random()*200){
-  far.appendChild(el("cloud", {left:x+"px", top:(5+Math.random()*48)+"%",
-    transform:"scale("+(0.55+Math.random()*0.9)+")"}));
-}
-for (let x = 60; x < worldW; x += 620 + Math.random()*300){
-  const w = 180 + Math.random()*140;
-  world.appendChild(el("hill", {left:x+"px", width:w+"px", height:(w*0.42)+"px"}));
-}
-FASES.forEach((f, i) => {
-  const segStart = i === 0 ? START_X : cpX(i-1);
-  if (i % 2 === 0) world.appendChild(el("bush", {left:(segStart+120)+"px", width:(70+Math.random()*50)+"px"}));
-  if (i % 3 === 1) world.appendChild(el("pipe", {left:(segStart+GAP*0.55)+"px"}));
-});
-
-// ---------- moedas ----------
-const coins = [];
-FASES.forEach((f, i) => {
-  const from = (i === 0 ? START_X + 90 : cpX(i-1) + 100);
-  const to = cpX(i) - 80;
-  for (let k = 0; k < 3; k++){
-    const x = from + (to-from) * (k/2);
-    const c = el("coin", {left:x+"px", bottom:(168 + (k%2)*22)+"px"});
-    world.appendChild(c);
-    coins.push({x:x, el:c, got:false});
-  }
-});
-
-// ---------- checkpoints ----------
-const cpEls = [];
-FASES.forEach((f, i) => {
-  const cp = document.createElement("div");
-  cp.className = "checkpoint";
-  cp.style.left = (cpX(i)-30) + "px";
-  cp.innerHTML =
-    '<div class="cp-emoji">'+f.emoji+'</div>' +
-    '<div class="cp-block">?</div>' +
-    '<div class="cp-label">'+f.mundo+'</div>';
-  cp.addEventListener("click", () => {
-    if (state.moving) return;
-    if (i <= state.idx) openModal(i);
-    else if (i === state.idx + 1) advance();
-  });
-  world.appendChild(cp);
-  cpEls.push(cp);
-});
-
-// ---------- castelo ----------
-const castle = document.createElement("div");
-castle.id = "castle";
-castle.style.left = castleX + "px";
-castle.innerHTML =
-  '<div class="tower t-left cs-brick"><div class="win" style="left:22px;top:30px"></div></div>' +
-  '<div class="tower t-right cs-brick"><div class="win" style="left:22px;top:30px"></div></div>' +
-  '<div class="body cs-brick">' +
-    '<div class="win" style="left:30px;top:40px"></div>' +
-    '<div class="win" style="right:30px;top:40px"></div>' +
-  '</div>' +
-  '<div class="tower t-mid cs-brick">' +
-    '<div class="flagpole"><div class="flag"></div></div>' +
-    '<div class="pwindow" id="pwindow"></div>' +
-    '<div class="bubble" id="pbubble">ME RESGATA! 💕</div>' +
-  '</div>' +
-  '<div class="door"></div>';
-world.appendChild(castle);
-document.getElementById("pwindow").appendChild(makeSprite(PRINCESS, PRINCESS_PAL, 3));
-castle.addEventListener("click", () => {
-  if (!state.moving && state.idx === FASES.length-1 && !state.done) advance();
-});
-
-// ---------- jogador ----------
-const playerEl = document.createElement("div");
-playerEl.id = "player";
-playerEl.style.left = START_X + "px";
-const heroSprite = makeSprite(HERO_A, HERO_PAL, PXP);
-playerEl.appendChild(heroSprite);
-world.appendChild(playerEl);
-const heroPx = heroSprite.querySelector(".pxs");
-const SH_A = gridShadow(HERO_A, HERO_PAL, PXP);
-const SH_B = gridShadow(HERO_B, HERO_PAL, PXP);
-
-// ---------- estado ----------
-const state = {idx:-1, x:START_X, moving:false, done:false};
-const btnNext = document.getElementById("btnNext");
-const modal = document.getElementById("modal");
-
-// nomes
-document.getElementById("introNames").textContent = CONFIG.jogador + " ❤ " + CONFIG.princesa;
-document.getElementById("endH1").textContent = "VOCÊ RESGATOU A PRINCESA " + CONFIG.princesa + "!";
-function updateHud(){
-  document.getElementById("hudName").textContent = CONFIG.jogador + " ❤×" + (state.idx+1);
-  document.getElementById("hudWorld").textContent = "MUNDO " + (state.idx >= 0 ? FASES[state.idx].mundo : "❤-1");
+// ---------- estrelas ----------
+const stars = document.getElementById("stars");
+for (let i = 0; i < 70; i++){
+  const s = document.createElement("span");
+  s.className = "star";
+  s.style.left = (Math.random()*100) + "%";
+  s.style.top = (Math.random()*100) + "%";
+  s.style.animationDelay = (Math.random()*2) + "s";
+  s.style.animationDuration = (1.4 + Math.random()*2) + "s";
+  if (Math.random() < .2){ s.style.width = s.style.height = "3px"; }
+  stars.appendChild(s);
 }
 
 // ---------- som (webaudio, 8-bit) ----------
 let actx = null;
 function ac(){
   if (!actx) try{ actx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+  if (actx && actx.state === "suspended") actx.resume();
   return actx;
 }
 function beep(freq, delay, dur, type, vol){
   const c = ac(); if (!c) return;
   try{
-    const o = c.createOscillator(), g = c.createGain();
+    const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + delay;
     o.type = type || "square"; o.frequency.value = freq;
-    const t = c.currentTime + delay;
-    g.gain.setValueAtTime(vol || 0.05, t);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    g.gain.setValueAtTime(vol || .05, t);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
     o.connect(g); g.connect(c.destination);
-    o.start(t); o.stop(t + dur + 0.02);
+    o.start(t); o.stop(t + dur + .02);
   }catch(e){}
 }
-function sCoin(v){ beep(988, 0, .09, "square", v||.05); beep(1319, .085, .22, "square", v||.05); }
-function sJump(){
-  const c = ac(); if(!c) return;
-  try{
-    const o = c.createOscillator(), g = c.createGain();
-    o.type = "square";
-    o.frequency.setValueAtTime(220, c.currentTime);
-    o.frequency.exponentialRampToValueAtTime(660, c.currentTime + .14);
-    g.gain.setValueAtTime(.05, c.currentTime);
-    g.gain.exponentialRampToValueAtTime(.0001, c.currentTime + .2);
-    o.connect(g); g.connect(c.destination);
-    o.start(); o.stop(c.currentTime + .22);
-  }catch(e){}
-}
-function sStart(){ [523,659,784,1047].forEach((f,i)=>beep(f, i*.1, .15)); }
-function sFanfare(){
-  [392,392,392,523,659,784,1047,1319].forEach((f,i)=>beep(f, i*.13, .22, "square", .06));
-  beep(1568, 8*.13, .8, "square", .06);
-}
+const sCursor = () => beep(880, 0, .06, "square", .04);
+const sStart = () => { [523, 659, 784, 1047, 1319].forEach((f, i) => beep(f, i*.08, .16)); };
 
-// ---------- câmera ----------
-function updateCamera(){
-  const vw = window.innerWidth;
-  let cam = state.x - vw*0.38;
-  cam = Math.max(0, Math.min(cam, worldW - vw));
-  world.style.transform = "translate3d(" + (-cam) + "px,0,0)";
-  far.style.transform = "translate3d(" + (-cam*0.3) + "px,0,0)";
+// ---------- seleção ----------
+const slots = [...document.querySelectorAll(".slot")];
+let sel = 0, going = false;
+function select(i, sound){
+  if (going) return;
+  i = (i + slots.length) % slots.length;
+  if (i !== sel && sound) sCursor();
+  sel = i;
+  slots.forEach((s, k) => s.classList.toggle("sel", k === sel));
 }
-window.addEventListener("resize", updateCamera);
-
-// ---------- movimento ----------
-function moveTo(target, cb){
-  state.moving = true;
-  btnNext.disabled = true;
-  let last = performance.now(), frameT = 0, frame = 0;
-  function step(now){
-    const dt = Math.min((now-last)/1000, .05); last = now;
-    frameT += dt;
-    if (frameT > .12){ frameT = 0; frame ^= 1; heroPx.style.boxShadow = frame ? SH_B : SH_A; }
-    state.x = Math.min(target, state.x + 300*dt);
-    playerEl.style.left = state.x + "px";
-    coins.forEach(c => {
-      if (!c.got && state.x + 30 >= c.x){ c.got = true; c.el.classList.add("got"); sCoin(.03); }
-    });
-    updateCamera();
-    if (state.x >= target){
-      state.moving = false;
-      heroPx.style.boxShadow = SH_A;
-      btnNext.disabled = false;
-      if (cb) cb();
-      return;
-    }
-    requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
-
-function popHeart(){
-  const h = el("heart-pop", {left:(state.x+12)+"px", bottom:"195px"});
-  h.textContent = "❤️";
-  world.appendChild(h);
-  setTimeout(()=>h.remove(), 950);
-}
-
-function markNext(){
-  cpEls.forEach(c=>c.classList.remove("next"));
-  const n = state.idx + 1;
-  if (n < FASES.length) cpEls[n].classList.add("next");
-}
-
-// ---------- avanço ----------
-function advance(){
-  btnNext.blur();
-  if (state.moving || state.done || !modal.classList.contains("hidden")) return;
-  const next = state.idx + 1;
-  if (next < FASES.length){
-    moveTo(cpX(next) - 24, () => {
-      playerEl.classList.add("jump");
-      sJump();
-      setTimeout(()=>{ playerEl.classList.remove("jump"); }, 600);
-      setTimeout(()=>{
-        sCoin();
-        popHeart();
-        state.idx = next;
-        const cp = cpEls[next];
-        cp.classList.add("visited");
-        cp.querySelector(".cp-block").textContent = "❤";
-        updateHud();
-        markNext();
-        if (state.idx === FASES.length-1){
-          btnNext.textContent = "🏰 RESGATAR A PRINCESA";
-          btnNext.classList.add("love");
-        }
-        setTimeout(()=>openModal(next), 420);
-      }, 230);
-    });
-  } else {
-    state.done = true;
-    moveTo(doorX, endingSequence);
-  }
-}
-
-// ---------- modal ----------
-const mImg = document.getElementById("mImg"), mPh = document.getElementById("mPh");
-function openModal(i){
-  const f = FASES[i];
-  document.getElementById("mWorld").textContent = "FASE " + f.mundo;
-  const badge = document.getElementById("mBadge");
-  badge.className = "badge " + f.tipo;
-  badge.textContent = f.tipo === "desafio" ? "🔥 DESAFIO SUPERADO"
-                    : f.tipo === "atual" ? "⚔️ DESAFIO ATUAL"
-                    : f.tipo === "bonus" ? "🐾 FASE BÔNUS"
-                    : f.tipo === "inicio" ? "🌱 O COMEÇO" : "⭐ CONQUISTA";
-  document.getElementById("mTitle").textContent = f.titulo;
-  document.getElementById("mDate").textContent = "📅 " + f.data;
-  document.getElementById("mText").textContent = f.texto;
-  mImg.style.display = "none"; mPh.style.display = "flex";
-  mImg.style.objectPosition = f.foco || "50% 30%";
-  if (f.foto){
-    mImg.onload = ()=>{ mImg.style.display = "block"; mPh.style.display = "none"; };
-    mImg.onerror = ()=>{ mImg.style.display = "none"; mPh.style.display = "flex"; };
-    mImg.src = f.foto;
-  }
-  modal.classList.remove("hidden");
-}
-function closeModal(){ modal.classList.add("hidden"); }
-document.getElementById("mBtn").addEventListener("click", function(){ this.blur(); closeModal(); });
-
-// ---------- final ----------
-function endingSequence(){
-  document.getElementById("pbubble").classList.add("hidden");
-  document.getElementById("controls").classList.add("hidden");
-  playerEl.style.transition = "opacity .6s";
-  playerEl.style.opacity = "0";
+function go(){
+  if (going) return;
+  going = true;
+  sStart();
   const flash = document.getElementById("flash");
-  setTimeout(()=>flash.classList.add("on"), 500);
-  setTimeout(()=>{
-    sFanfare();
-    document.getElementById("ending").classList.remove("hidden");
-    flash.classList.remove("on");
-    buildEnding();
-  }, 1100);
+  setTimeout(() => flash.classList.add("on"), 250);
+  setTimeout(() => document.getElementById("loading").classList.remove("hidden"), 600);
+  setTimeout(() => { location.href = slots[sel].dataset.href; }, 900);
 }
-
-function buildEnding(){
-  const sp = document.getElementById("endSprites");
-  sp.appendChild(makeSprite(HERO_A, HERO_PAL, 5));
-  const h = document.createElement("div");
-  h.className = "end-heart"; h.textContent = "💖";
-  sp.appendChild(h);
-  sp.appendChild(makeSprite(PRINCESS, PRINCESS_PAL, 5));
-
-  const desafios = FASES.filter(f=>f.tipo==="desafio").length;
-  const atuais = FASES.filter(f=>f.tipo==="atual").length;
-  document.getElementById("endStats").innerHTML =
-    "FASES COMPLETAS: " + FASES.length + "/" + FASES.length +
-    " · DESAFIOS SUPERADOS: " + desafios +
-    (atuais ? " · EM BATALHA: " + atuais : "") +
-    "<br>MOEDAS: AINDA FARMANDO · CORAÇÕES: <span class='inf'>∞</span> · GAME OVER: NUNCA";
-
-  // mensagem digitada
-  const msgEl = document.getElementById("endMsg");
-  const box = document.querySelector(".end-box");
-  const txt = CONFIG.mensagemFinal;
-  let i = 0;
-  (function type(){
-    msgEl.textContent = txt.slice(0, ++i);
-    box.scrollTop = box.scrollHeight;
-    if (i < txt.length) setTimeout(type, 20);
-  })();
-
-  startFireworks();
-  setInterval(()=>{
-    const fh = el("float-heart", {left:(Math.random()*100)+"%",
-      animationDuration:(4+Math.random()*4)+"s"});
-    fh.textContent = ["❤️","💕","💗","💘"][Math.floor(Math.random()*4)];
-    document.getElementById("ending").appendChild(fh);
-    setTimeout(()=>fh.remove(), 9000);
-  }, 700);
-}
-
-function startFireworks(){
-  const cv = document.getElementById("fx"), ctx = cv.getContext("2d");
-  function rs(){ cv.width = innerWidth; cv.height = innerHeight; }
-  rs(); window.addEventListener("resize", rs);
-  let parts = [];
-  const colors = ["#ff6b9d","#ffd166","#7ae582","#6bb6ff","#ff4d4d","#ffffff"];
-  function burst(){
-    const x = 60 + Math.random()*(cv.width-120);
-    const y = 60 + Math.random()*cv.height*0.45;
-    const c = colors[Math.floor(Math.random()*colors.length)];
-    for (let i = 0; i < 36; i++){
-      const a = i/36*Math.PI*2, s = 1.6 + Math.random()*3;
-      parts.push({x:x, y:y, vx:Math.cos(a)*s, vy:Math.sin(a)*s, life:1, c:c});
-    }
-  }
-  burst();
-  setInterval(burst, 700);
-  (function loop(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    parts.forEach(p=>{
-      p.x += p.vx; p.y += p.vy; p.vy += .035; p.life -= .011;
-      ctx.globalAlpha = Math.max(p.life, 0);
-      ctx.fillStyle = p.c;
-      ctx.fillRect(p.x, p.y, 4, 4);
-    });
-    ctx.globalAlpha = 1;
-    parts = parts.filter(p=>p.life > 0);
-    requestAnimationFrame(loop);
-  })();
-}
-
-// ---------- controles ----------
-btnNext.addEventListener("click", advance);
-document.getElementById("btnStart").addEventListener("click", startGame);
-function startGame(){
-  ac(); sStart();
-  document.getElementById("intro").classList.add("hidden");
-  document.getElementById("hud").classList.remove("hidden");
-  document.getElementById("controls").classList.remove("hidden");
-  updateHud(); markNext(); updateCamera();
-}
-document.addEventListener("keydown", e=>{
-  if (e.code !== "ArrowRight" && e.code !== "Space" && e.code !== "Enter") return;
-  e.preventDefault();
-  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-  if (!document.getElementById("intro").classList.contains("hidden")) startGame();
-  else if (!modal.classList.contains("hidden")) closeModal();
-  else advance();
+slots.forEach((s, i) => {
+  s.addEventListener("mouseenter", () => select(i, true));
+  s.addEventListener("click", () => { ac(); select(i, false); go(); });
 });
-document.addEventListener("keyup", e=>{
-  if (e.code === "Space" || e.code === "Enter" || e.code === "ArrowRight") e.preventDefault();
+document.addEventListener("keydown", e => {
+  if (["ArrowLeft", "ArrowUp", "KeyA", "KeyW"].includes(e.code)){ e.preventDefault(); ac(); select(sel - 1, true); }
+  else if (["ArrowRight", "ArrowDown", "KeyD", "KeyS"].includes(e.code)){ e.preventDefault(); ac(); select(sel + 1, true); }
+  else if (e.code === "Enter" || e.code === "Space"){ e.preventDefault(); ac(); go(); }
 });
-
-updateCamera();
+// voltando pelo botão "voltar" do navegador, a página pode vir do cache
+window.addEventListener("pageshow", () => {
+  going = false;
+  document.getElementById("flash").classList.remove("on");
+  document.getElementById("loading").classList.add("hidden");
+});
+if (("ontouchstart" in window) || (window.matchMedia && matchMedia("(pointer:coarse)").matches)){
+  document.getElementById("press").textContent = "TOQUE NUM CARTUCHO";
+  document.getElementById("hint").classList.add("hidden");
+}
 </script>
 </body>
 </html>

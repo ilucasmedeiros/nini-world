@@ -23,3 +23,17 @@ Dicas:
   caber na janelinha da fase).
 - Enquanto a foto não existir, aparece um quadro "SUA FOTO AQUI"
   no lugar — o site funciona normalmente sem as fotos.
+
+------------------------------------------------------------
+NINI FIGHTER II (aniversário) — pasta "fotos/aniversario/"
+------------------------------------------------------------
+
+  nini-rosto.jpg   rosto da Nini (vira o retrato pixelado da
+                   seleção, do VS e do golpe especial)
+  nini.jpg         a foto inteira da Nini (reserva)
+  raquel.jpg       a foto da aniversariante no porta-retrato final
+  calcada.jpg      a calçada que vira o cenário da luta
+
+Para trocar, mantenha os mesmos nomes (ou atualize os caminhos
+no CONFIG do topo do aniversario.html). Fotos de iPhone em
+.HEIC não abrem no Chrome — converta para .jpg antes.

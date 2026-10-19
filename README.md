@@ -1,13 +1,18 @@
-# ❤ Nossa História — Dia dos Namorados (estilo Mario)
+# 🕹️ Super Nini World — 2 em 1
 
-Um site-jogo onde o personagem caminha por um mapa estilo Super Mario,
-passando por todas as fases do relacionamento (conquistas e desafios),
-até resgatar a princesa no castelo no final. 🏰
+Um "cartucho" com dois jogos retrô feitos de presente:
+
+| Jogo | Arquivo | O que é |
+|---|---|---|
+| **Nossa História** — Dia dos Namorados | `namorados.html` | O personagem caminha por um mapa estilo Super Mario, passando por todas as fases do relacionamento, até resgatar a princesa no castelo. 🏰 |
+| **Nini Fighter II** — Edição Aniversário | `aniversario.html` | Uma luta estilo Street Fighter: a **Nini** defende o bolo da Raquel contra a **Chatinha**, a shih-tzu mais chata da rua. A Nini sempre ganha, e no final vem a festa: velinhas, "Parabéns" em 8-bit, LEVEL UP e a foto da aniversariante. 🎂 |
+
+O `index.html` é a **tela de seleção de jogos**, no estilo dos cartuchos "9999 em 1".
+É esse o link que você manda pra ela.
 
 ## Como ver
 
-Dê dois cliques no arquivo **index.html** — abre direto no navegador,
-não precisa instalar nada.
+Dê dois cliques no arquivo **index.html**. Ele abre direto no navegador e não precisa instalar nada.
 
 > ⚠️ Importante: para as **fotos** carregarem, em alguns navegadores é
 > melhor servir os arquivos localmente. Se alguma foto não aparecer,
@@ -17,39 +22,56 @@ não precisa instalar nada.
 > ```
 > e abra http://localhost:8000
 
-## Como personalizar (3 passos)
+## Como jogar
 
-Tudo que você precisa editar está **no topo do `index.html`**, na
-seção marcada com `💕💕💕 EDITE AQUI A HISTÓRIA DE VOCÊS 💕💕💕`:
+**Menu:** use ← → e Enter, ou toque/clique num cartucho.
 
-1. **Nomes** — troque `jogador` (você) e `princesa` (ela).
-2. **Fases** — cada item da lista `fases` é uma parada no mapa:
-   - `titulo`, `data` e `texto`: a história de vocês, do seu jeito
-   - `tipo`: `"conquista"`, `"desafio"` ou `"inicio"` (muda o selo da fase)
-   - `emoji`: o ícone que flutua no mapa
-   - `foto`: o nome do arquivo na pasta `fotos/`
-   - Pode **adicionar ou remover fases** à vontade — o mapa se ajusta sozinho.
-3. **Mensagem final** — edite `mensagemFinal`, que é digitada letra por
-   letra na tela do resgate da princesa.
+**Nossa História:** aperte START e avance com o botão **▶ AVANÇAR** (ou seta →, espaço, enter).
+Cada fase abre um cartão com a história e a foto.
+
+**Nini Fighter II:** primeiro vem a história, depois a seleção da lutadora, o VS e então 2 rounds.
+
+| | Teclado | Celular (botões na tela) |
+|---|---|---|
+| Andar | ← → | ◀ ▶ |
+| Pular | ↑ | ▲ |
+| Mordida | Z (ou espaço) | **A** |
+| Patada | X | **B** |
+| AU-DOUKEN! (latido) | C — ou o clássico ↓ ↘ → + Z | **★** |
+| SHIH-TZU-RYUKEN! (super) | C com a barra SUPER cheia | **★** quando aparece "SUPER!" |
+
+A Nini **não perde**: se a vida dela chega a 25%, ela entra em **FÚRIA**, a barra
+SUPER enche na hora e os golpes ficam mais fortes. O relógio é ∞, então não existe derrota por tempo.
+
+No celular dá pra jogar em pé (controles embaixo, tipo Game Boy) ou deitado (tela maior).
+
+Atalhos para testar: `aniversario.html#luta` (pula direto pra luta) e
+`aniversario.html#final` (pula direto pro parabéns).
+
+## Como personalizar
+
+Cada jogo tem um bloco `CONFIG` **no topo do arquivo**, marcado com 💕 ou 🎂:
+
+- **namorados.html**: os nomes, as fases (título, data, foto e texto de cada uma) e a mensagem final.
+- **aniversario.html**:
+  - os nomes da lutadora, da rival e da aniversariante;
+  - a idade (`nivelAntes` / `nivelNovo`), que aparece nas velinhas e no LEVEL UP;
+  - a história do começo e a frase de vitória;
+  - a mensagem final, digitada letra por letra.
 
 ## Fotos
 
-Coloque as fotos na pasta `fotos/` com os nomes listados em
-`fotos/LEIA-ME.txt`. Sem foto, aparece um quadro "SUA FOTO AQUI"
-(o site funciona normalmente mesmo assim).
-
-## Como jogar
-
-- **START** na tela inicial
-- Botão **▶ AVANÇAR** (ou seta →, espaço, enter) para caminhar até a próxima fase
-- Cada fase abre um cartão com a história + foto
-- Clique em fases já visitadas para rever
-- No final: **🏰 RESGATAR A PRINCESA** → fogos, corações e a mensagem final
+As fotos ficam na pasta `fotos/`. A lista completa está em `fotos/LEIA-ME.txt`.
 
 ## Como publicar de graça (para mandar o link pra ela)
 
 - **Netlify Drop** (mais fácil): acesse https://app.netlify.com/drop e
-  arraste esta pasta inteira — pronto, sai um link na hora.
+  arraste esta pasta inteira. Pronto, sai um link na hora.
 - **GitHub Pages** ou **Vercel** também funcionam (é só um site estático).
 
-Feliz Dia dos Namorados! 🍄❤️
+> 🔒 Antes de arrastar a pasta, tire dela os arquivos originais
+> (`IMG_1121.HEIC`, `IMG_1321.JPG` e o print `Captura de Tela ... .png`).
+> O site só usa as versões reduzidas que estão em `fotos/aniversario/`.
+> O print original mostra o número da casa; no jogo ele aparece pixelado.
+
+Feliz Dia dos Namorados e feliz aniversário! 🍄❤️🎂
