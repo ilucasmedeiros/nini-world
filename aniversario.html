@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>🎂 Nini Fighter II — Edição Aniversário</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1226;
+  --gold:#ffd000;
+  --pink:#ff7bb1;
+  --sky:#5fc8ff;
+  --cyan:#7ff3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Press Start 2P', monospace;
+  background:#05030d;color:#fff;
+  touch-action:manipulation;
+  -webkit-user-select:none; user-select:none;
+  -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none;
+}
+.hidden{display:none !important}
+canvas{image-rendering:crisp-edges;image-rendering:pixelated}
+.blink{animation:blink 1.1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.inf{font-family:'VT323',monospace;font-size:1.6em;line-height:0;vertical-align:-2px}
+
+/* ===== BOTÕES ===== */
+.btn{
+  font-family:'Press Start 2P',monospace;font-size:13px;cursor:pointer;
+  background:var(--gold);color:#5a3a00;border:4px solid var(--ink);
+  padding:15px 24px;box-shadow:0 6px 0 var(--ink);
+  transition:transform .06s, box-shadow .06s;
+}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink)}
+.btn.love{background:var(--pink);color:#5e0f2e}
+.btn.sky{background:var(--sky);color:#06324a}
+.btn-menu{
+  font-family:'Press Start 2P',monospace;font-size:9px;color:#fff;text-decoration:none;display:inline-block;
+  background:#2a2140;border:3px solid #fff;padding:9px 11px;box-shadow:0 4px 0 #000;
+}
+.btn-menu:active{transform:translateY(3px);box-shadow:0 1px 0 #000}
+#mute{
+  position:fixed;top:8px;right:8px;z-index:95;width:38px;height:38px;cursor:pointer;
+  font-size:16px;background:rgba(20,10,40,.75);border:2px solid #fff;color:#fff;
+}
+
+/* ===== TELAS (overlays) ===== */
+.screen{
+  position:fixed;inset:0;z-index:40;display:flex;overflow:auto;padding:18px 14px;text-align:center;
+  background:radial-gradient(ellipse at 50% 115%, #4a1a5e 0%, #160b2c 55%, #05030d 100%);
+}
+.screen::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:5;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,.2) 0 1px, transparent 1px 3px);
+}
+.inner{margin:auto;display:flex;flex-direction:column;align-items:center;gap:16px;max-width:760px;width:100%}
+.corner{position:fixed;top:12px;left:12px;z-index:6}
+
+.logo{
+  font-size:clamp(20px,6.4vw,46px);line-height:1.25;letter-spacing:1px;
+  background:linear-gradient(#fff7b0 0%,#ffd23f 38%,#ff8a1f 62%,#e8283c 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(3px 3px 0 #2a0610);
+}
+.sub{font-size:clamp(9px,2.4vw,13px);color:var(--cyan);letter-spacing:2px;text-shadow:2px 2px 0 #062a3a}
+.scene{width:min(336px,88vw)}
+.story-text{
+  font-family:'VT323',monospace;font-size:clamp(20px,3.4vw,25px);line-height:1.3;color:#f3e9ff;
+  white-space:pre-line;min-height:6.6em;max-width:560px;
+}
+.legend{font-size:8px;line-height:2.1;color:#b9a6e0}
+.legend b{color:var(--gold);font-weight:normal}
+.k{font-family:"VT323",monospace;font-size:17px;line-height:0;vertical-align:-1px}
+
+/* seleção */
+.sel-title{font-size:clamp(12px,3.4vw,20px);color:var(--gold);text-shadow:3px 3px 0 #6d4a00;line-height:1.5}
+.sel-wrap{display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap}
+.sel-card{
+  background:#1d1238;border:4px solid #fff;box-shadow:6px 6px 0 rgba(0,0,0,.5);
+  padding:14px;display:flex;flex-direction:column;align-items:center;gap:10px;width:min(300px,88vw);
+}
+.sel-card canvas{width:144px;height:144px;border:4px solid var(--gold);background:#120a24}
+.sel-name{font-size:16px}
+.sel-move{font-size:8px;color:var(--cyan)}
+.stats{width:100%;display:flex;flex-direction:column;gap:7px;font-size:8px;text-align:left}
+.stat{display:flex;align-items:center;gap:8px}
+.stat span{width:86px;flex:none}
+.stat i{flex:1;height:8px;background:#3a2a5c;position:relative}
+.stat i::after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--v);background:linear-gradient(90deg,#ffd23f,#ff8a1f)}
+.grid{display:grid;grid-template-columns:repeat(3,64px);gap:10px}
+.slot{
+  width:64px;height:64px;border:3px solid #6b5a8e;background:#140c28;position:relative;
+  display:flex;align-items:center;justify-content:center;font-size:16px;color:#6b5a8e;
+}
+.slot canvas{width:58px;height:58px}
+.slot.p1{border-color:#ff3b3b;animation:selb .5s steps(2) infinite;cursor:pointer}
+@keyframes selb{50%{border-color:#ffd23f}}
+.slot .tag{position:absolute;top:-9px;left:-6px;font-size:7px;background:#ff3b3b;color:#fff;padding:2px 3px}
+.slot.cpu{border-color:#2f7fd0}
+.slot.cpu .tag{background:#2f7fd0}
+
+/* VS */
+#vs{background:linear-gradient(115deg,#ff8a1f 0 50%,#2f1a6e 50% 100%)}
+.vs-row{display:flex;align-items:center;justify-content:center;gap:clamp(8px,4vw,40px)}
+.vs-side{display:flex;flex-direction:column;align-items:center;gap:12px}
+.vs-side canvas{
+  width:clamp(104px,30vw,190px);height:clamp(104px,30vw,190px);
+  border:5px solid #fff;box-shadow:6px 6px 0 rgba(0,0,0,.45);background:#120a24;
+}
+.vs-left{animation:inL .45s ease-out both}
+.vs-right{animation:inR .45s ease-out both}
+@keyframes inL{from{transform:translateX(-120vw)}}
+@keyframes inR{from{transform:translateX(120vw)}}
+.vs-mid{font-size:clamp(30px,10vw,72px);color:#ffd23f;text-shadow:4px 4px 0 #a01830,-2px -2px 0 #000;animation:vsPop .45s .4s both}
+@keyframes vsPop{from{transform:scale(4);opacity:0}}
+.vs-name{font-size:clamp(10px,2.8vw,16px);text-shadow:3px 3px 0 #000}
+.vs-tip{font-size:8px;color:#fff;text-shadow:2px 2px 0 #000}
+
+/* vitória */
+.win-title{font-size:clamp(20px,6vw,40px);color:#ffd23f;text-shadow:4px 4px 0 #a01830;line-height:1.4}
+.quote-box{
+  background:#0e0a1e;border:4px solid #fff;box-shadow:6px 6px 0 rgba(0,0,0,.5);
+  padding:16px;display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;max-width:600px;
+}
+.quote-box canvas{width:120px;height:120px;border:4px solid var(--gold)}
+.quote{font-family:'VT323',monospace;font-size:25px;line-height:1.25;color:#fff;text-align:left;max-width:340px;min-height:2.5em}
+.quote small{display:block;font-family:'Press Start 2P',monospace;font-size:9px;color:var(--gold);margin-bottom:8px}
+
+/* ===== ARENA ===== */
+#arena{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#cv{display:block;width:320px;height:180px;background:#000;image-rendering:auto}
+#legend{font-size:8px;color:#9d8cc4;margin-top:14px;text-align:center;line-height:2}
+#legend b{color:var(--gold);font-weight:normal}
+#pad{display:none}
+body.touch #legend{display:none}
+body.touch #pad{display:flex}
+body.touch.portrait #arena{justify-content:flex-start;padding-top:max(52px, env(safe-area-inset-top))}
+body.touch.portrait #pad{flex:1;width:100%;max-width:520px;justify-content:space-between;align-items:center;padding:10px 16px 26px;position:relative}
+body.touch:not(.portrait) #pad{
+  position:fixed;left:0;right:0;bottom:0;justify-content:space-between;align-items:flex-end;
+  padding:0 max(14px, env(safe-area-inset-left)) 12px;pointer-events:none;opacity:.62;
+}
+body.touch:not(.portrait) #pad .pb{pointer-events:auto}
+#rot{display:none;position:absolute;top:2px;left:0;right:0;text-align:center;font-size:7px;color:#9d8cc4}
+body.touch.portrait #rot{display:block}
+.dpad{display:grid;grid-template-columns:repeat(3,58px);grid-template-rows:repeat(2,58px);gap:4px}
+.dpad .up{grid-column:2;grid-row:1}
+.dpad .left{grid-column:1;grid-row:2}
+.dpad .right{grid-column:3;grid-row:2}
+.pb{
+  font-family:'Press Start 2P',monospace;color:#fff;cursor:pointer;touch-action:none;
+  border:4px solid #000;box-shadow:0 5px 0 #000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+}
+.pb.on{transform:translateY(4px);box-shadow:0 1px 0 #000;filter:brightness(1.25)}
+.dpad .pb{background:#3a3550;font-size:18px;border-radius:8px}
+.abtns{position:relative;width:222px;height:172px}
+.abtns .pb{position:absolute;width:70px;height:70px;border-radius:50%;font-size:18px}
+.abtns .pb small{font-size:6px}
+.abtns .a{left:0;bottom:0;background:#e8283c}
+.abtns .b{left:76px;bottom:52px;background:#2f7fd0}
+.abtns .s{right:0;top:0;background:#c99a00;color:#fff}
+.abtns .s.ready{background:#ff8a1f;animation:sready .35s steps(2) infinite}
+@keyframes sready{50%{background:#ffd23f;color:#5a3a00}}
+body.touch:not(.portrait) .dpad{grid-template-columns:repeat(3,52px);grid-template-rows:repeat(2,52px)}
+body.touch:not(.portrait) .abtns{width:200px;height:150px}
+body.touch:not(.portrait) .abtns .pb{width:62px;height:62px}
+body.touch:not(.portrait) .abtns .b{left:68px;bottom:46px}
+
+/* ===== FINAL (aniversário) ===== */
+#ending{background:radial-gradient(ellipse at 50% 110%, #5a1d6e, #1a0b30 60%, #0b0618)}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:1}
+#ending .inner{position:relative;z-index:2}
+.end-pre{font-size:clamp(10px,2.6vw,14px);color:var(--cyan);line-height:1.8;text-shadow:2px 2px 0 #062a3a}
+.cake-cv{width:min(224px,62vw);cursor:pointer;filter:drop-shadow(0 0 22px rgba(255,190,80,.4))}
+.cake-cv.out{filter:none}
+.tiny{font-size:8px;color:#b9a6e0}
+.hb{font-size:clamp(15px,4.3vw,28px);line-height:1.6;color:var(--pink);text-shadow:4px 4px 0 #6d1136}
+.hb span{color:var(--gold);text-shadow:4px 4px 0 #6d4a00}
+.photo-row{display:flex;align-items:flex-end;justify-content:center;gap:8px;flex-wrap:wrap}
+.pframe{
+  background:#fff;padding:10px 10px 8px;border:4px solid var(--ink);transform:rotate(-2deg);
+  box-shadow:8px 8px 0 rgba(0,0,0,.45), 0 0 0 4px var(--pink);
+  animation:dropIn .6s cubic-bezier(.2,1.4,.5,1) both;
+}
+@keyframes dropIn{from{transform:translateY(-60vh) rotate(-12deg)}}
+.pphoto{position:relative;width:min(250px,64vw);aspect-ratio:4/5;border:3px solid var(--ink);background:#cdbfa4;overflow:hidden}
+.pphoto img{display:block;width:100%;height:100%;object-fit:cover}
+.pphoto .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:#6f5c39}
+.pcap{font-size:9px;color:var(--ink);margin-top:8px}
+.nini-side{position:relative;padding-top:40px}
+.nini-side canvas{width:132px;height:138px;display:block}
+.bub{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);white-space:nowrap;
+  background:#fff;color:var(--ink);border:3px solid var(--ink);padding:7px 9px;font-size:8px;
+  box-shadow:3px 3px 0 rgba(0,0,0,.3);animation:bob 1.4s ease-in-out infinite;
+}
+.bub::after{content:"";position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top:6px solid #fff}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-6px)}}
+.lvl{border:4px solid #fff;background:#120a24;padding:12px 16px;box-shadow:6px 6px 0 rgba(0,0,0,.45);width:min(360px,90vw)}
+.lvl-up{font-size:16px;color:var(--cyan);text-shadow:3px 3px 0 #062a3a;visibility:hidden}
+.lvl-up.on{visibility:visible;animation:blink .45s steps(2) 8}
+.lvl-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;margin:10px 0 8px}
+.lvl-row b{font-weight:normal;color:var(--gold)}
+.xp{height:14px;border:3px solid #fff;background:#2a1a46;position:relative}
+.xp i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#7ff3ff,#5fe08a)}
+.xp-lbl{font-size:7px;color:#b9a6e0;margin-top:6px;text-align:left}
+#endMsg{
+  font-family:'VT323',monospace;font-size:clamp(18px,2.8vw,22px);line-height:1.3;color:#ffe9f3;
+  white-space:pre-line;max-width:560px;min-height:50px;text-align:center;
+}
+.end-stats{font-size:8px;color:#cbb6e8;line-height:2}
+.end-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center}
+.float{position:fixed;bottom:-40px;font-size:24px;z-index:1;animation:rise linear forwards;pointer-events:none}
+@keyframes rise{to{transform:translateY(-115vh);opacity:.2}}
+
+@media (max-width:600px){
+  .btn{font-size:11px;padding:14px 18px}
+}
+</style>
+</head>
+<body>
+
+<button id="mute" aria-label="som">🔊</button>
+
+<!-- ARENA (canvas da luta) -->
+<div id="arena" class="hidden">
+  <canvas id="cv" width="320" height="180"></canvas>
+  <div id="legend">
+    <b class="k">← →</b> ANDAR · <b class="k">↑</b> PULAR · <b>Z</b> MORDIDA · <b>X</b> PATADA · <b>C</b> ESPECIAL
+  </div>
+  <div id="pad">
+    <div id="rot">📱↻ DEITE O CELULAR PARA UMA TELA MAIOR</div>
+    <div class="dpad">
+      <button class="pb up" data-k="up">▲</button>
+      <button class="pb left" data-k="left">◀</button>
+      <button class="pb right" data-k="right">▶</button>
+    </div>
+    <div class="abtns">
+      <button class="pb s" data-k="special" id="btnSp"><b>★</b><small id="spLbl">ESPECIAL</small></button>
+      <button class="pb b" data-k="kick"><b>B</b><small>PATADA</small></button>
+      <button class="pb a" data-k="bite"><b>A</b><small>MORDIDA</small></button>
+    </div>
+  </div>
+</div>
+
+<!-- 1. HISTÓRIA -->
+<div id="story" class="screen">
+  <a class="btn-menu corner" href="index.html">◀ MENU</a>
+  <div class="inner">
+    <div class="logo">NINI FIGHTER II</div>
+    <div class="sub">EDIÇÃO ANIVERSÁRIO</div>
+    <canvas id="scene" class="scene" width="112" height="48"></canvas>
+    <p class="story-text" id="storyText"></p>
+    <button class="btn" id="btnStory">▶ START</button>
+    <div class="legend" id="storyLegend">
+      TECLADO: <b class="k">← →</b> ANDAR · <b class="k">↑</b> PULAR<br>
+      <b>Z</b> MORDIDA · <b>X</b> PATADA · <b>C</b> ESPECIAL
+    </div>
+  </div>
+</div>
+
+<!-- 2. SELEÇÃO DE PERSONAGEM -->
+<div id="select" class="screen hidden">
+  <div class="inner">
+    <div class="sel-title">ESCOLHA SUA<br>LUTADORA</div>
+    <div class="sel-wrap">
+      <div class="sel-card">
+        <canvas id="selBig" width="48" height="48"></canvas>
+        <div class="sel-name" id="selName">NINI</div>
+        <div class="sel-move">ESPECIAL: AU-DOUKEN!</div>
+        <div class="stats">
+          <div class="stat"><span>FOFURA</span><i style="--v:100%"></i></div>
+          <div class="stat"><span>MORDIDA</span><i style="--v:85%"></i></div>
+          <div class="stat"><span>LATIDO</span><i style="--v:100%"></i></div>
+          <div class="stat"><span>CORAGEM</span><i style="--v:95%"></i></div>
+          <div class="stat"><span>PREGUIÇA</span><i style="--v:60%"></i></div>
+        </div>
+      </div>
+      <div class="grid" id="selGrid"></div>
+    </div>
+    <button class="btn" id="btnSelect">CONFIRMAR ▶</button>
+  </div>
+</div>
+
+<!-- 3. VS -->
+<div id="vs" class="screen hidden">
+  <div class="inner">
+    <div class="vs-row">
+      <div class="vs-side vs-left"><canvas id="vsL" width="48" height="48"></canvas><div class="vs-name" id="vsNameL">NINI</div></div>
+      <div class="vs-mid">VS</div>
+      <div class="vs-side vs-right"><canvas id="vsR" width="24" height="24"></canvas><div class="vs-name" id="vsNameR">CHATINHA</div></div>
+    </div>
+    <div class="vs-tip blink">TOQUE PARA LUTAR</div>
+  </div>
+</div>
+
+<!-- 4. VITÓRIA -->
+<div id="win" class="screen hidden">
+  <div class="inner">
+    <div class="win-title" id="winTitle">NINI WINS!</div>
+    <div class="quote-box">
+      <canvas id="winFace" width="48" height="48"></canvas>
+      <p class="quote"><small id="winWho">NINI:</small><span id="winQuote"></span></p>
+    </div>
+    <button class="btn love hidden" id="btnWin">IR PARA A FESTA 🎂</button>
+  </div>
+</div>
+
+<!-- 5. FINAL: FELIZ ANIVERSÁRIO -->
+<div id="ending" class="screen hidden">
+  <canvas id="confetti"></canvas>
+  <div class="inner">
+    <div id="cakePhase" class="inner">
+      <div class="end-pre">MISSÃO CUMPRIDA!<br>O BOLO ESTÁ SALVO 🎂</div>
+      <canvas id="cakeCv" class="cake-cv" width="28" height="24"></canvas>
+      <div class="hb blink" style="font-size:clamp(12px,3.4vw,18px)">SOPRE AS VELINHAS!</div>
+      <div class="tiny">(TOQUE NO BOLO OU APERTE ESPAÇO)</div>
+    </div>
+    <div id="party" class="inner hidden">
+      <h1 class="hb">FELIZ ANIVERSÁRIO,<br><span id="hbName">RAQUEL</span>!</h1>
+      <div class="photo-row">
+        <div class="pframe">
+          <div class="pphoto">
+            <img id="raquelImg" alt="foto da aniversariante">
+            <div class="ph" id="raquelPh">📷 FOTO AQUI</div>
+          </div>
+          <div class="pcap" id="pcap">P2 · RAQUEL</div>
+        </div>
+        <div class="nini-side">
+          <div class="bub">AU AU! 🎉</div>
+          <canvas id="niniParty" width="44" height="46"></canvas>
+        </div>
+      </div>
+      <div class="lvl">
+        <div class="lvl-up" id="lvlUp">★ LEVEL UP! ★</div>
+        <div class="lvl-row"><span id="lvlName">RAQUEL</span><b id="lvlNum">LV 27</b></div>
+        <div class="xp"><i id="xpFill"></i></div>
+        <div class="xp-lbl">EXP DE FELICIDADE</div>
+      </div>
+      <p id="endMsg"></p>
+      <div class="end-stats" id="endStats"></div>
+      <div class="end-btns">
+        <button class="btn sky" id="btnSong">🎵 PARABÉNS</button>
+        <button class="btn love" id="btnAgain">JOGAR DE NOVO</button>
+        <a class="btn-menu" href="index.html">◀ MENU</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   🎂🎂🎂  EDITE AQUI O ANIVERSÁRIO  🎂🎂🎂
+
+   - lutadora / rival / aniversariante -> nomes que aparecem no jogo
+   - nivelAntes / nivelNovo -> a idade (LEVEL UP 27 -> 28)
+   - focoFoto -> ponto da foto que fica visível no porta-retrato
+                 ("50% 0%" = topo, "50% 50%" = centro...)
+   - historia, fraseVitoria e mensagemFinal -> os textos, do seu jeito
+   ============================================================ */
+const CONFIG = {
+  lutadora: "NINI",
+  rival: "CHATINHA",
+  aniversariante: "RAQUEL",
+  nivelAntes: 27,
+  nivelNovo: 28,
+
+  fotoAniversariante: "fotos/aniversario/raquel.jpg",
+  focoFoto: "50% 22%",
+  fotoNini: "fotos/aniversario/nini-rosto.jpg",
+  cenario: "fotos/aniversario/calcada.jpg",
+
+  historia:
+    "Hoje é aniversário da RAQUEL! 🎂\n\n" +
+    "Mas a CHATINHA, a shih-tzu mais chata da rua, quer estragar a festa e roubar o bolo.\n\n" +
+    "Só a NINI pode salvar o dia!",
+
+  fraseVitoria: "Ninguém encosta no bolo da Tata!",
+
+  mensagemFinal: "Raquel,\n\n" +
+    "Feliz aniversário! Hoje o mundo inteiro (e a Nini, principalmente) para pra comemorar você.\n\n" +
+    "Mais um ano ao seu lado é mais uma fase que eu tenho a sorte de jogar junto. Obrigado por cada risada, cada abraço e por deixar a minha vida mais bonita.\n\n" +
+    "Que esse novo nível venha cheio de saúde, conquistas e sonhos realizados — e que eu esteja do seu lado em todos eles.\n\n" +
+    "Eu te amo. ❤"
+};
+/* ============================================================
+   FIM DA PARTE EDITÁVEL — daqui pra baixo é o motor do jogo 🎮
+   ============================================================ */
+
+const $ = id => document.getElementById(id);
+
+// ---------- pixel-art ----------
+// cada sprite é um grid de letras; "." é transparente.
+// rostos são simétricos: escrevemos só a metade esquerda e espelhamos.
+const sym = rows => rows.map(r => r + [...r].reverse().join(""));
+const swap = (rows, repl) => rows.map((r, i) => repl[i] !== undefined ? repl[i] : r);
+
+// NINI: shih-tzu, rosto prateado, orelhas cinza, corpo escuro,
+// peito branco, dentinhos de baixo aparecendo e coleira cinza
+const NINI_PAL = {o:"#1b1519", L:"#d9d2c5", l:"#a89f92", m:"#b9a890", a:"#5a534b", g:"#6e675f", G:"#403b37",
+  D:"#3b3840", d:"#28262c", W:"#f1ede4", E:"#0d0b0e", e:"#ffffff", N:"#141214", T:"#fffaf0", M:"#5a1420", P:"#ff7a9c",
+  C:"#7a8494", c:"#4d5461", Y:"#ffd23f", R:"#ff4f7a", B:"#5fc8ff"};
+const NH = [
+"......ooooo",
+"....ooLlLLL",
+"...oLLLLLLL",
+"..oLLLLlLLL",
+".oGLLLLLLLL",
+"oGgLLLLLLLL",
+"oGglaaaLLLL",
+"oGgaEEeaLLL",
+"oGgaEEEalLL",
+"oGglaaalLLL",
+"oGgglLLLlLN",
+"oGgglLLmlNN",
+"oGGgglmmlTT",
+"oGGgglmmmMM",
+"oGGGgolmmmm",
+".oGGGoommmm",
+"..oGGo.oomm",
+"...oo....oo"];
+const NINI_PARTS = {
+  "head.n": sym(NH),
+  "head.o": sym(swap(NH, {12:"oGGgglmoMMM", 13:"oGGgglmoMPP", 14:"oGGGgolmoTT", 15:".oGGGoommoo"})),
+  "head.h": sym(swap(NH, {6:"oGglELLLLLL", 7:"oGglLEELLLL", 8:"oGglELLLLLL", 9:"oGglLLLlLLL", 12:"oGGgglmmlMM", 13:"oGGgglmmlMP"})),
+  "head.k": sym(swap(NH, {6:"oGglELELLLL", 7:"oGglLELLLLL", 8:"oGglELELLLL", 9:"oGglLLLlLLL", 13:"oGGgglmmmMP", 14:"oGGGgolmmmP", 15:".oGGGoommmP"})),
+  "head.w": sym(swap(NH, {6:"oGglLLLLLLL", 7:"oGglLELLLLL", 8:"oGglELELLLL", 9:"oGglLLLlLLL", 10:"oGgPPLLLlLN", 13:"oGGgglmmmMP", 14:"oGGGgolmmmP"})),
+  torso: sym([
+    "..oCCCC",
+    ".oCcCCC",
+    ".oDDWWW",
+    "oDDWWWW",
+    "oDDWWWW",
+    "oDdDWWW",
+    "oDdDWWW",
+    "oDdDDWW",
+    "oDdDDDW",
+    "oDdDDDD",
+    "odDDDDD",
+    ".odDDDD",
+    "..ooooo"]),
+  arm: [
+    ".ooo.",
+    "oLLLo",
+    "olLlo",
+    "oDDDo",
+    "oDdDo",
+    "oDdDo",
+    "oDDDo",
+    ".ooo."],
+  armx: [
+    ".oooooooo.",
+    "oDDDDDDlLo",
+    "odDDDDDLLo",
+    "oDDDDDDlLo",
+    ".oooooooo."],
+  leg: [
+    ".oooo..",
+    "oDDDDo.",
+    "oDdDDo.",
+    "oDdDDo.",
+    "oDdDDo.",
+    "oDDDDo.",
+    "oDDDDoo",
+    "olLLLLo",
+    ".oooooo"],
+  legx: [
+    ".ooooooooo..",
+    "oDDDDDDDDDoo",
+    "odDDDDDDDlLo",
+    "oDDDDDDDDLLo",
+    ".oooooooooo."],
+  tail: [
+    ".oo....",
+    "oLlo...",
+    "olgGo..",
+    ".ogGGo.",
+    "..oGgGo",
+    "...oGgo",
+    "....oo."],
+  hat: [
+    "...Y...",
+    "..oYo..",
+    "..oRo..",
+    ".oRBRo.",
+    ".oBRBo.",
+    "oRBRBRo",
+    "ooooooo"]
+};
+
+// CHATINHA: shih-tzu toda pretinha, o mesmo corpo da Nini com outras cores
+// (a velha "troca de paleta" do Street Fighter), sobrancelha brava,
+// olhos vermelhos, lacinho no topete e coleira vermelha
+const CH_PAL = {o:"#050407", L:"#4a4654", l:"#35323d", m:"#3b3844", a:"#141318", g:"#26242c", G:"#18171c",
+  D:"#24222a", d:"#141318", W:"#3a3742", E:"#0d0b0e", e:"#ffffff", R:"#ff2d4a", N:"#000000", T:"#fffaf0",
+  M:"#5a1420", P:"#ff7a9c", C:"#c4223a", c:"#7a1020", B:"#ff3d6a", b:"#a8173a"};
+const CHB = swap(NH, {5:"oGgooLLLLLL", 6:"oGglLoooLLL", 7:"oGgaRReaLLL", 8:"oGgaRRRalLL"});
+const CHAT_PARTS = Object.assign({}, NINI_PARTS, {
+  "head.n": sym(CHB),
+  "head.o": sym(swap(CHB, {12:"oGGgglmoMMM", 13:"oGGgglmoMPP", 14:"oGGGgolmoTT", 15:".oGGGoommoo"})),
+  // olhos brancos quando apanha / cai, senão somem no pelo preto
+  "head.h": sym(swap(NH, {6:"oGgleLLLLLL", 7:"oGglLeeLLLL", 8:"oGgleLLLLLL", 9:"oGglLLLlLLL", 12:"oGGgglmmlMM", 13:"oGGgglmmlMP"})),
+  "head.k": sym(swap(NH, {6:"oGgleLeLLLL", 7:"oGglLeLLLLL", 8:"oGgleLeLLLL", 9:"oGglLLLlLLL", 13:"oGGgglmmmMP", 14:"oGGGgolmmmP", 15:".oGGGoommmP"})),
+  bow: [
+    "oo...oo",
+    "oBo.oBo",
+    "obBoBbo",
+    "oBo.oBo",
+    "oo...oo"]
+});
+
+// poses: [parte, x, y] num quadro de 44x46 (pés na última linha), virado pra direita
+const SW = 44, SH = 46;
+const bob = (list, dy) => list.map(([p,x,y]) => [p, x, p === "leg" ? y : y + dy]);
+const withHead = (list, h) => list.map(([p,x,y]) => [p.startsWith("head") ? h : p, x, y]);
+
+const N_IDLE = [["tail",9,25],["leg",14,37],["arm",33,22],["torso",15,24],["leg",21,37],["head.n",11,7],["arm",29,26]];
+const N_HURT = [["tail",7,27],["leg",13,37],["arm",6,19],["torso",12,25],["leg",19,37],["head.h",7,9],["arm",28,19]];
+const N_WIN  = [["tail",9,25],["leg",15,37],["arm",6,7],["arm",35,7],["torso",15,24],["leg",21,37],["head.w",11,7]];
+const NINI = {
+  pal: NINI_PAL, parts: NINI_PARTS,
+  poses: {
+    idle1: N_IDLE,
+    idle2: bob(N_IDLE, 1),
+    walk1: bob([["tail",9,25],["leg",12,37],["arm",33,22],["torso",15,24],["leg",23,37],["head.n",11,7],["arm",29,26]], 1),
+    walk2: [["tail",9,25],["leg",16,37],["arm",33,22],["torso",15,24],["leg",19,37],["head.n",11,7],["arm",29,26]],
+    bite:  [["tail",11,25],["leg",15,37],["arm",16,27],["torso",17,24],["leg",23,37],["head.o",16,7],["arm",32,28]],
+    kick:  [["tail",6,24],["leg",13,37],["arm",24,21],["torso",12,23],["legx",24,31],["head.n",7,6],["arm",25,26]],
+    special: [["tail",9,25],["leg",12,37],["torso",14,24],["leg",22,37],["head.o",9,7],["armx",27,24],["armx",27,28]],
+    hurt:  N_HURT,
+    jump:  [["tail",9,23],["leg",14,33],["arm",33,19],["torso",15,22],["leg",21,32],["head.n",11,5],["arm",29,23]],
+    jkick: [["tail",8,22],["leg",14,32],["torso",13,21],["legx",25,29],["head.n",8,4],["arm",28,19]],
+    upper: [["tail",9,25],["leg",15,37],["torso",15,22],["leg",21,36],["arm",32,8],["arm",32,1],["head.o",9,6]],
+    win:   N_WIN,
+    ko:    withHead(N_HURT, "head.k"),
+    party: N_WIN.concat([["hat",19,1]])
+  }
+};
+
+const CHAT = {
+  pal: CH_PAL, parts: CHAT_PARTS, bow: [8,-3],
+  poses: {
+    idle1: N_IDLE,
+    idle2: NINI.poses.idle2,
+    walk1: NINI.poses.walk1,
+    walk2: NINI.poses.walk2,
+    scratch: [["tail",10,25],["leg",15,37],["arm",18,27],["torso",16,24],["leg",22,37],["head.o",13,7],["armx",28,26]],
+    kick:  NINI.poses.kick,
+    yap:   NINI.poses.bite,
+    hurt:  N_HURT,
+    block: [["tail",9,25],["leg",14,37],["torso",14,24],["leg",20,37],["head.h",9,8],["arm",28,14],["arm",31,19]],
+    jump:  NINI.poses.jump,
+    ko:    NINI.poses.ko
+  }
+};
+
+function newCanvas(w, h){
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  return c;
+}
+function drawGrid(x, grid, pal, gx, gy, px){
+  grid.forEach((row, r) => {
+    for (let i = 0; i < row.length; i++){
+      const ch = row[i];
+      if (ch === ".") continue;
+      const col = pal[ch];
+      if (!col) continue;
+      x.fillStyle = col;
+      x.fillRect((gx+i)*px, (gy+r)*px, px, px);
+    }
+  });
+}
+function renderParts(def, list, px, w, h){
+  const c = newCanvas(w*px, h*px), x = c.getContext("2d");
+  list.forEach(([name, gx, gy]) => {
+    drawGrid(x, def.parts[name], def.pal, gx, gy, px);
+    if (def.bow && name.startsWith("head")) drawGrid(x, def.parts.bow, def.pal, gx+def.bow[0], gy+def.bow[1], px);
+  });
+  return c;
+}
+function flip(src){
+  const c = newCanvas(src.width, src.height), x = c.getContext("2d");
+  x.scale(-1, 1); x.drawImage(src, -src.width, 0);
+  return c;
+}
+function rotL(src){
+  const c = newCanvas(src.height, src.width), x = c.getContext("2d");
+  x.translate(0, src.width); x.rotate(-Math.PI/2); x.drawImage(src, 0, 0);
+  return c;
+}
+function bounds(c){
+  const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+  let minX = c.width, maxX = 0, maxY = 0;
+  for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++){
+    if (d[(y*c.width + x)*4 + 3]){ if (x < minX) minX = x; if (x > maxX) maxX = x; if (y > maxY) maxY = y; }
+  }
+  return {minX, maxX, maxY};
+}
+function bake(def, px){
+  def.spr = {};
+  for (const name in def.poses){
+    const r = renderParts(def, def.poses[name], px, SW, SH);
+    def.spr[name] = {r, l: flip(r)};
+  }
+  const lie = rotL(def.spr.ko.r), lieL = flip(lie);
+  def.spr.koLie = {r: lie, l: lieL, br: bounds(lie), bl: bounds(lieL)};
+}
+
+// bolinho da calçada (12x10) e bolo grande do final (28x24)
+const CAKE_PAL = {Y:"#ffd23f", O:"#ff8a1f", Q:"#ff7bb1", q:"#ffffff", p:"#ffc2dd", F:"#ff9ccc", f:"#ffd1e6",
+  B:"#5a3220", b:"#3d2014", s:"#5fc8ff", z:"#ffd23f", w:"#f4f4f4", v:"#b8b8c8", o:"#2a140c", g:"#9a95a8"};
+const MINI_CAKE = [
+"..Y.....Y...",
+"..Q.....Q...",
+"..Q.....Q...",
+"oooooooooooo",
+"oFFFFFFFFFFo",
+"oFBFFBFFBFFo",
+"oBBsBBBzBBBo",
+"oBBBBsBBBBbo",
+"oooooooooooo",
+"wwwwwwwwwwww"];
+const CAKE_BODY = [
+"...oooooooooooooooooooooo...",
+"..oFFFFFFFFFFFFFFFFFFFFFFo..",
+"..oFFfFFFFFFfFFFFFFFfFFFFo..",
+"..oFBFFBBFFFBFFBBFFFBFFBFo..",
+"..oBBFBBBBFBBBBBFBBBBBFBBo..",
+"..oBsBBBBsBBBBzBBBBsBBBBbo..",
+"..oBBBzBBBBBsBBBBBBBsBBBbo..",
+"..oBBBBBBsBBBBBBzBBBBBBBbo..",
+"..oBsBBBBBBBzBBBBBBsBBBBbo..",
+"..oooooooooooooooooooooooo..",
+".wwwwwwwwwwwwwwwwwwwwwwwwww.",
+"..vvvvvvvvvvvvvvvvvvvvvvvv.."];
+const DIGITS = {
+  0:[".QQQQ.","QQ..QQ","QQ..QQ","QQ..QQ","QQ..QQ","QQ..QQ","QQ..QQ",".QQQQ."],
+  1:["..QQ..",".QQQ..","QQQQ..","..QQ..","..QQ..","..QQ..","..QQ..","QQQQQQ"],
+  2:[".QQQQ.","QQ..QQ","....QQ","...QQ.","..QQ..",".QQ...","QQ....","QQQQQQ"],
+  3:[".QQQQ.","QQ..QQ","....QQ","..QQQ.","....QQ","....QQ","QQ..QQ",".QQQQ."],
+  4:["...QQ.","..QQQ.",".QQQQ.","QQ.QQ.","QQQQQQ","...QQ.","...QQ.","...QQ."],
+  5:["QQQQQQ","QQ....","QQQQQ.","....QQ","....QQ","....QQ","QQ..QQ",".QQQQ."],
+  6:[".QQQQ.","QQ....","QQ....","QQQQQ.","QQ..QQ","QQ..QQ","QQ..QQ",".QQQQ."],
+  7:["QQQQQQ","....QQ","...QQ.","...QQ.","..QQ..","..QQ..","..QQ..","..QQ.."],
+  8:[".QQQQ.","QQ..QQ","QQ..QQ",".QQQQ.","QQ..QQ","QQ..QQ","QQ..QQ",".QQQQ."],
+  9:[".QQQQ.","QQ..QQ","QQ..QQ","QQ..QQ",".QQQQQ","....QQ","....QQ",".QQQQ."]
+};
+// purpurina nas velinhas de número (igual às da foto)
+const glitter = grid => grid.map((row, r) => [...row].map((ch, i) =>
+  ch !== "Q" ? ch : ((i*7 + r*3) % 5 === 0 ? "q" : (i + r*2) % 4 === 0 ? "p" : "Q")).join(""));
+const FLAME = [[".Y..","YOY.","YOOY",".OO."], ["..Y.",".YOY","YOOY",".OO."]];
+const SMOKE = [["..g.",".g..","..g.","...."], [".g..","..g.",".g..","g..."]];
+
+// ---------- som (webaudio, 8-bit) ----------
+let actx = null, master = null, muted = false;
+try{ muted = localStorage.getItem("niniMute") === "1"; }catch(e){}
+function ac(){
+  if (!actx) try{
+    actx = new (window.AudioContext || window.webkitAudioContext)();
+    master = actx.createGain(); master.gain.value = muted ? 0 : 1; master.connect(actx.destination);
+  }catch(e){ actx = null; }
+  if (actx && actx.state === "suspended") actx.resume();
+  return actx;
+}
+function tone(f1, f2, delay, dur, type, vol){
+  const c = ac(); if (!c) return;
+  try{
+    const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + Math.max(0, delay);
+    o.type = type || "square";
+    o.frequency.setValueAtTime(f1, t);
+    if (f2 !== f1) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(vol || .05, t);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g); g.connect(master);
+    o.start(t); o.stop(t + dur + .02);
+  }catch(e){}
+}
+const beep = (f, delay, dur, type, vol) => tone(f, f, delay, dur, type, vol);
+let nbuf = null;
+function noise(delay, dur, vol, freq){
+  const c = ac(); if (!c) return;
+  try{
+    if (!nbuf){
+      nbuf = c.createBuffer(1, c.sampleRate, c.sampleRate);
+      const d = nbuf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1;
+    }
+    const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(), t = c.currentTime + delay;
+    s.buffer = nbuf; f.type = "lowpass"; f.frequency.value = freq || 2000;
+    g.gain.setValueAtTime(vol || .1, t);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    s.connect(f); f.connect(g); g.connect(master);
+    s.start(t); s.stop(t + dur + .02);
+  }catch(e){}
+}
+const midi = m => 440 * Math.pow(2, (m - 69)/12);
+const SFX = {
+  cursor(){ beep(880, 0, .05, "square", .04); },
+  select(){ beep(988, 0, .08); beep(1319, .08, .2); },
+  bark(){ tone(950, 380, 0, .09, "square", .07); noise(0, .06, .05, 1800); },
+  barkBig(){ tone(700, 250, 0, .12, "square", .08); tone(900, 300, .13, .16, "square", .08); noise(0, .1, .06, 1400); },
+  yap(){ [0, .09, .18].forEach(d => tone(1500, 950, d, .06, "square", .035)); },
+  hit(h){ noise(0, h ? .18 : .1, h ? .22 : .15, h ? 900 : 1600); tone(h ? 150 : 220, 50, 0, h ? .18 : .1, "square", .07); },
+  block(){ beep(1800, 0, .04, "square", .04); beep(1400, .04, .05, "square", .03); },
+  whoosh(){ noise(0, .09, .05, 3500); },
+  jump(){ tone(220, 660, 0, .16, "square", .045); },
+  round(){ [523, 659, 784].forEach((f, i) => beep(f, i*.09, .14, "square", .05)); },
+  fight(){ [392, 523, 659, 1047].forEach((f, i) => beep(f, i*.06, .12, "square", .06)); noise(.24, .25, .08, 2500); },
+  ko(){ tone(700, 60, 0, 1.1, "sawtooth", .07); noise(0, .6, .12, 700); },
+  superS(){ [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => beep(f, i*.045, .12, "square", .05)); noise(.3, .3, .06, 4000); },
+  roundWin(){ [784, 988, 1175, 1568].forEach((f, i) => beep(f, i*.1, .18, "square", .05)); },
+  win(){ [392,392,392,523,659,784,1047,1319].forEach((f, i) => beep(f, i*.13, .22, "square", .06)); beep(1568, 8*.13, .8, "square", .06); },
+  rage(){ tone(200, 900, 0, .5, "sawtooth", .05); },
+  blow(){ noise(0, .7, .12, 900); },
+  levelUp(){ [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => beep(f, i*.08, .14, "square", .05)); }
+};
+// "Parabéns" — só a melodia (domínio público), em 8-bit
+function parabens(){
+  const N = {G4:392, A4:440, B4:493.88, C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99};
+  const song = [["G4",.75],["G4",.25],["A4",1],["G4",1],["C5",1],["B4",2],
+                ["G4",.75],["G4",.25],["A4",1],["G4",1],["D5",1],["C5",2],
+                ["G4",.75],["G4",.25],["G5",1],["E5",1],["C5",1],["B4",1],["A4",2],
+                ["F5",.75],["F5",.25],["E5",1],["C5",1],["D5",1],["C5",3]];
+  const beat = .36;
+  let t = .05;
+  song.forEach(([n, d]) => {
+    beep(N[n], t, d*beat*.92, "square", .05);
+    beep(N[n]/2, t, d*beat*.92, "triangle", .07);
+    t += d*beat;
+  });
+  return t;
+}
+// trilha da luta (loop chiptune)
+const MUSIC = {
+  bass: [45,45,57,45,45,45,43,55, 41,41,53,41,43,43,55,43],
+  lead: [69,0,72,0,76,0,74,72, 74,0,0,72,71,0,67,0, 69,0,72,0,77,0,76,74, 76,0,0,74,76,0,79,0]
+};
+let musicTimer = null, mStep = 0, mNext = 0;
+function startMusic(){
+  const c = ac(); if (!c || musicTimer) return;
+  mStep = 0; mNext = c.currentTime + .05;
+  musicTimer = setInterval(() => {
+    const st = .19;
+    while (mNext < actx.currentTime + .25){
+      const i = mStep % 32, d = mNext - actx.currentTime;
+      beep(midi(MUSIC.bass[i % 16]), d, st*.9, "triangle", .09);
+      if (MUSIC.lead[i]) beep(midi(MUSIC.lead[i]), d, st*1.6, "square", .022);
+      mNext += st; mStep++;
+    }
+  }, 60);
+}
+function stopMusic(){ clearInterval(musicTimer); musicTimer = null; }
+const muteBtn = $("mute");
+function setMute(m){
+  muted = m;
+  try{ localStorage.setItem("niniMute", m ? "1" : "0"); }catch(e){}
+  if (master) master.gain.value = m ? 0 : 1;
+  muteBtn.textContent = m ? "🔇" : "🔊";
+}
+setMute(muted);
+muteBtn.addEventListener("click", () => { ac(); setMute(!muted); muteBtn.blur(); });
+
+// ---------- imagens ----------
+function loadImg(src){
+  return new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+}
+// reduz a foto em etapas (fica bonita) e devolve um canvas pequeno = foto pixelada
+function shrink(img, w, h, filter){
+  let src = img, sw = img.naturalWidth || img.width, sh = img.naturalHeight || img.height;
+  while (sw/2 > w && sh/2 > h){
+    const t = newCanvas(Math.round(sw/2), Math.round(sh/2)), x = t.getContext("2d");
+    x.imageSmoothingQuality = "high";
+    x.drawImage(src, 0, 0, sw, sh, 0, 0, t.width, t.height);
+    src = t; sw = t.width; sh = t.height;
+  }
+  const c = newCanvas(w, h), x = c.getContext("2d");
+  x.imageSmoothingQuality = "high";
+  if (filter) x.filter = filter;
+  x.drawImage(src, 0, 0, sw, sh, 0, 0, w, h);
+  return c;
+}
+function paint(target, src){
+  const x = target.getContext("2d");
+  x.imageSmoothingEnabled = false;
+  x.clearRect(0, 0, target.width, target.height);
+  x.drawImage(src, 0, 0, target.width, target.height);
+}
+
+let BG = null, FACE = {s:null, m:null, cut:null};
+
+// ---------- sprites prontos ----------
+const S = 2;          // cada "pixel" do sprite vira 2x2 na tela da luta
+bake(NINI, S);
+bake(CHAT, S);
+const miniCake = [0, 1].map(k => {
+  const pal = Object.assign({}, CAKE_PAL, k ? {Y:"#ff8a1f"} : {});
+  return {s2: (() => { const c = newCanvas(24, 20); drawGrid(c.getContext("2d"), MINI_CAKE, pal, 0, 0, 2); return c; })(),
+          s1: (() => { const c = newCanvas(12, 10); drawGrid(c.getContext("2d"), MINI_CAKE, pal, 0, 0, 1); return c; })()};
+});
+const chatFace = flip(renderParts(CHAT, [["head.n",-1,3]], 1, 20, 20));      // HUD (20x20)
+const chatPortrait = flip(renderParts(CHAT, [["head.n",1,4]], 1, 24, 24));   // seleção e VS
+const niniHeadFallback = renderParts(NINI, [["head.n",1,3]], 1, 24, 24);
+
+// ============================================================
+//  TELAS
+// ============================================================
+let screen = "story";
+const SCREENS = ["story", "select", "vs", "win", "ending"];
+function show(id){
+  SCREENS.forEach(s => $(s).classList.toggle("hidden", s !== id));
+  screen = id || "fight";
+}
+function typeText(el, txt, speed, done){
+  const chars = Array.from(txt);
+  let i = 0;
+  clearInterval(el._ti);
+  el.textContent = "";
+  el._ti = setInterval(() => {
+    el.textContent = chars.slice(0, ++i).join("");
+    if (i >= chars.length){ clearInterval(el._ti); if (done) done(); }
+  }, speed);
+}
+
+// nomes
+$("selName").textContent = CONFIG.lutadora;
+$("vsNameL").textContent = CONFIG.lutadora;
+$("vsNameR").textContent = CONFIG.rival;
+$("winTitle").textContent = CONFIG.lutadora + " WINS!";
+$("winWho").textContent = CONFIG.lutadora + ":";
+$("hbName").textContent = CONFIG.aniversariante;
+$("lvlName").textContent = CONFIG.aniversariante;
+$("pcap").textContent = "P2 · " + CONFIG.aniversariante + " · LV " + CONFIG.nivelNovo;
+$("lvlNum").textContent = "LV " + CONFIG.nivelAntes;
+
+// cena da história (nini, bolo e chatinha se encarando)
+const sceneFrames = [1, 2].map(k => {
+  const c = newCanvas(112, 48), x = c.getContext("2d");
+  x.drawImage(renderParts(NINI, NINI.poses["idle"+k], 1, SW, SH), 0, 2);
+  x.drawImage(miniCake[k-1].s1, 50, 38);
+  x.drawImage(flip(renderParts(CHAT, CHAT.poses["idle"+(3-k)], 1, SW, SH)), 68, 2);
+  return c;
+});
+let sceneK = 0;
+const sceneTimer = setInterval(() => { paint($("scene"), sceneFrames[sceneK ^= 1]); }, 380);
+paint($("scene"), sceneFrames[0]);
+
+// grade de seleção
+(function buildGrid(){
+  const g = $("selGrid");
+  for (let i = 0; i < 6; i++){
+    const s = document.createElement("div");
+    s.className = "slot";
+    if (i === 0){
+      s.classList.add("p1");
+      s.innerHTML = '<span class="tag">P1</span><canvas id="slotNini" width="20" height="20"></canvas>';
+      s.addEventListener("click", confirmSelect);
+    } else if (i === 5){
+      s.classList.add("cpu");
+      s.innerHTML = '<span class="tag">CPU</span><canvas width="24" height="24"></canvas>';
+      paint(s.querySelector("canvas"), chatPortrait);
+    } else {
+      s.textContent = "🔒";
+      s.addEventListener("click", () => SFX.cursor());
+    }
+    g.appendChild(s);
+  }
+})();
+paint($("vsR"), chatPortrait);
+function paintNiniFaces(){
+  const big = FACE.m || niniHeadFallback, small = FACE.s || niniHeadFallback;
+  paint($("selBig"), big);
+  paint($("slotNini"), small);
+  paint($("vsL"), big);
+  paint($("winFace"), big);
+}
+paintNiniFaces();
+
+// fluxo
+function goSelect(){
+  if (screen !== "story") return;
+  ac(); SFX.select();
+  clearInterval($("storyText")._ti);
+  show("select");
+}
+function confirmSelect(){
+  if (screen !== "select") return;
+  ac(); SFX.barkBig();
+  setTimeout(goVS, 450);
+  screen = "selecting";
+}
+let vsTimer = null;
+function goVS(){
+  show("vs");
+  $("arena").classList.remove("hidden");
+  layout();
+  SFX.fight();
+  vsTimer = setTimeout(startFight, 2800);
+}
+function startFight(){
+  if (screen === "fight") return;
+  clearTimeout(vsTimer);
+  show(null);
+  $("arena").classList.remove("hidden");
+  layout();
+  Object.assign(G, {on:true, wins:0, superM:0, hits:0, barks:0});
+  startRound(1);
+}
+let winShown = false;
+function showWin(){
+  if (winShown) return;
+  winShown = true;
+  show("win");
+  SFX.win();
+  typeText($("winQuote"), CONFIG.fraseVitoria, 45, () => $("btnWin").classList.remove("hidden"));
+}
+
+$("btnStory").addEventListener("click", function(){ this.blur(); goSelect(); });
+$("btnSelect").addEventListener("click", function(){ this.blur(); confirmSelect(); });
+$("vs").addEventListener("click", () => { if (screen === "vs") startFight(); });
+$("btnWin").addEventListener("click", function(){ this.blur(); goEnding(); });
+
+function primary(){
+  if (screen === "story") goSelect();
+  else if (screen === "select") confirmSelect();
+  else if (screen === "vs") startFight();
+  else if (screen === "win"){ if (!$("btnWin").classList.contains("hidden")) goEnding(); }
+  else if (screen === "ending" && !blown) blowCandles();
+}
+
+// ============================================================
+//  LUTA
+// ============================================================
+const cv = $("cv"), ctx = cv.getContext("2d");
+const VW = 320, VH = 180, GROUND = 160;
+let RES = 1;   // pixels reais por pixel do jogo (ajustado no layout)
+
+const G = {on:false, phase:"intro", phaseT:0, round:1, wins:0, hitstop:0, slowmo:0, shake:0, flash:0,
+  superFreeze:0, superM:0, rage:false, perfect:true, lowDizzy:false, proj:[], fx:[], ann:null,
+  vac:-60, lastInput:0, hits:0, barks:0, lastHit:-999};
+const AI = {mode:null, modeT:0, cool:40};
+function mkF(def){
+  return {def, x:0, z:0, vx:0, vz:0, facing:1, hp:100, hpShow:100, st:"idle", t:0,
+    atk:null, hit:false, stun:0, combo:0, bubble:null, sub:null, bounced:false};
+}
+const nini = mkF(NINI), chat = mkF(CHAT);
+function setSt(f, st){ if (f.st !== st){ f.st = st; f.t = 0; } }
+
+// golpes
+const NATK = {
+  bite:    {pose:"bite",  total:20, act:[5,9],  reach:42, dmg:7,  stun:16, push:2.2, meter:10, txt:"NHAC!"},
+  kick:    {pose:"kick",  total:26, act:[7,12], reach:50, dmg:10, stun:20, push:3,   meter:12, txt:"PÁ!"},
+  jbite:   {pose:"bite",  total:22, act:[4,14], reach:44, dmg:7,  stun:16, push:2.2, meter:10, txt:"NHAC!"},
+  jkick:   {pose:"jkick", total:24, act:[4,16], reach:50, dmg:10, stun:20, push:3,   meter:12, txt:"PÁ!"},
+  special: {pose:"special", total:34, proj:{at:12, vx:3.4, dmg:14, stun:24, push:3, meter:12, kind:"au", txt:"AU!"}}
+};
+const SUPER_ATK = {dmg:40, stun:44, push:1.6, launch:6.5, heavy:true, super:true, txt:"POW!!"};
+const CATK = {
+  scratch: {pose:"scratch", total:40, act:[18,22], reach:42, dmg:8, stun:16, push:2.4, txt:"GRR!"},
+  kick:    {pose:"kick",    total:42, act:[20,24], reach:48, dmg:9, stun:18, push:2.8, txt:"TOMA!"},
+  yap:     {pose:"yap",     total:46, proj:{at:18, vx:2.3, dmg:6, stun:14, push:2, kind:"yap", txt:"AU AU"}}
+};
+
+// ---------- entrada ----------
+const KEYMAP = {ArrowLeft:"left", KeyA:"left", ArrowRight:"right", KeyD:"right", ArrowUp:"up", KeyW:"up",
+  ArrowDown:"down", KeyS:"down", KeyZ:"bite", KeyJ:"bite", Space:"bite", KeyX:"kick", KeyK:"kick", KeyC:"special", KeyL:"special"};
+const held = {}, padHeld = {}, buf = {bite:-99, kick:-99, special:-99};
+let tick = 0, usingTouch = false, dirHist = [], lastDir = null;
+const isHeld = k => !!(held[k] || padHeld[k]);
+function press(k){ if (k in buf) buf[k] = tick; G.lastInput = tick; }
+function took(k){ if (tick - buf[k] <= 8){ buf[k] = -99; return true; } return false; }
+// easter egg: ↓ ↘ → + mordida = AU-DOUKEN
+function trackDir(){
+  const fwd = nini.facing > 0 ? isHeld("right") : isHeld("left");
+  const d = isHeld("down") ? (fwd ? "DF" : "D") : (fwd ? "F" : null);
+  if (d && d !== lastDir){ dirHist.push({d, t:tick}); if (dirHist.length > 6) dirHist.shift(); }
+  lastDir = d;
+}
+function motionDone(){
+  const h = dirHist.slice(-3);
+  return h.length === 3 && h[0].d === "D" && h[1].d === "DF" && h[2].d === "F" && tick - h[0].t < 30;
+}
+
+document.addEventListener("keydown", e => {
+  const k = KEYMAP[e.code];
+  if (screen === "fight"){
+    if (k){ e.preventDefault(); if (!held[k]) press(k); held[k] = true; usingTouch = false; }
+    return;
+  }
+  if (e.repeat) return;
+  if (e.code === "Enter" || e.code === "Space"){ e.preventDefault(); ac(); primary(); }
+});
+document.addEventListener("keyup", e => { const k = KEYMAP[e.code]; if (k) held[k] = false; });
+window.addEventListener("blur", () => { for (const k in held) held[k] = false; for (const k in padHeld) padHeld[k] = false; });
+
+document.querySelectorAll("#pad .pb").forEach(b => {
+  const k = b.dataset.k;
+  const on = e => {
+    e.preventDefault(); ac();
+    try{ b.setPointerCapture(e.pointerId); }catch(err){}
+    if (!padHeld[k]) press(k);
+    padHeld[k] = true; usingTouch = true;
+    b.classList.add("on");
+  };
+  const off = () => { padHeld[k] = false; b.classList.remove("on"); };
+  b.addEventListener("pointerdown", on);
+  b.addEventListener("pointerup", off);
+  b.addEventListener("pointercancel", off);
+  b.addEventListener("lostpointercapture", off);
+  b.addEventListener("contextmenu", e => e.preventDefault());
+});
+
+// ---------- layout (tela + controles) ----------
+const isTouch = ("ontouchstart" in window) || (window.matchMedia && matchMedia("(pointer:coarse)").matches);
+function layout(){
+  const W = innerWidth, H = innerHeight, portrait = H > W;
+  document.body.classList.toggle("touch", isTouch);
+  document.body.classList.toggle("portrait", portrait);
+  let availH = H;
+  if (isTouch && portrait) availH = H - Math.max(230, H*0.4) - 52;
+  else if (!isTouch) availH = H - 60;
+  let s = Math.min(W/VW, availH/VH);
+  if (s > 2) s = Math.floor(s*2)/2;
+  cv.style.width = Math.floor(VW*s) + "px";
+  cv.style.height = Math.floor(VH*s) + "px";
+  const res = Math.max(2, Math.min(6, Math.ceil(s*(window.devicePixelRatio || 1))));
+  if (res !== RES){ RES = res; cv.width = VW*RES; cv.height = VH*RES; }
+}
+window.addEventListener("resize", layout);
+if (isTouch){
+  usingTouch = true;
+  $("storyLegend").innerHTML = "CONTROLES NA TELA:<br><b>◀ ▶</b> ANDAR · <b>▲</b> PULAR<br><b>A</b> MORDIDA · <b>B</b> PATADA · <b>★</b> ESPECIAL";
+}
+
+// ---------- rounds ----------
+function startRound(n){
+  Object.assign(G, {round:n, phase:"intro", phaseT:0, perfect:true, rage:false, lowDizzy:false,
+    proj:[], fx:[], ann:null, vac:-60, superFreeze:0, slowmo:0, hitstop:0});
+  Object.assign(nini, {x:96, z:0, vx:0, vz:0, facing:1, hp:100, hpShow:100, st:"idle", t:0, atk:null, sub:null, bubble:null});
+  Object.assign(chat, {x:224, z:0, vx:0, vz:0, facing:-1, hp:100, hpShow:100, st:"idle", t:0, atk:null, combo:0, bubble:null, bounced:false});
+  Object.assign(AI, {mode:null, modeT:0, cool:40});
+}
+function finishFight(){
+  G.phase = "done"; G.phaseT = 0;
+  stopMusic();
+  setTimeout(showWin, 1500);
+}
+function announce(txt, size, life, sub, style){ G.ann = {txt, size, life, sub, style, t:0}; }
+
+function phaseLogic(){
+  const t = G.phaseT;
+  if (G.phase === "intro"){
+    if (t === 1){ announce("ROUND " + G.round, 16, 70); SFX.round(); }
+    if (t === 80){ announce("FIGHT!", 24, 45); SFX.fight(); }
+    if (t === 118){ G.phase = "fight"; G.phaseT = 0; G.lastInput = tick; startMusic(); }
+  } else if (G.phase === "ko"){
+    if (t > 110 && chat.z === 0 && Math.abs(chat.vx) < .3){
+      G.phase = "roundEnd"; G.phaseT = 0; G.wins++;
+      nini.atk = null; nini.sub = null; setSt(nini, "win"); nini.vx = 0;
+      announce(CONFIG.lutadora + " WINS!", 16, 170, G.perfect ? "PERFECT!" : null);
+      SFX.roundWin();
+    }
+  } else if (G.phase === "roundEnd" || G.phase === "done"){
+    if (nini.z === 0 && t % 36 === 0) nini.vz = 3.2;
+    if (G.phase === "roundEnd" && t === 180){
+      if (G.wins < 2) startRound(G.round + 1);
+      else finishFight();
+    }
+  }
+}
+
+// ---------- controle da nini ----------
+function niniControl(){
+  const n = nini;
+  trackDir();
+  if (G.phase !== "fight") return;
+  if (["hurt", "ko", "win", "super"].includes(n.st)) return;
+  if (n.st !== "atk"){
+    const myProj = G.proj.some(p => p.owner === n);
+    if (took("special")){
+      if (G.superM >= 100){ if (n.z === 0) return startSuper(); }
+      else if (!myProj) return startAtk(n, NATK.special);
+    }
+    if (took("bite")){
+      if (motionDone() && !myProj){ dirHist = []; return startAtk(n, NATK.special); }
+      return startAtk(n, n.z > 0 ? NATK.jbite : NATK.bite);
+    }
+    if (took("kick")) return startAtk(n, n.z > 0 ? NATK.jkick : NATK.kick);
+  }
+  if (n.st === "atk" || n.z > 0) return;
+  if (isHeld("up")){
+    setSt(n, "jump"); n.vz = 5.6;
+    n.vx = isHeld("right") ? 1.8 : isHeld("left") ? -1.8 : 0;
+    SFX.jump();
+    return;
+  }
+  if (isHeld("left") || isHeld("right")){
+    const dir = isHeld("right") ? 1 : -1;
+    setSt(n, "walk");
+    n.vx = dir * (dir === n.facing ? 1.8 : 1.4);
+  } else { setSt(n, "idle"); n.vx = 0; }
+}
+const blockChance = () => G.rage ? .08 : (G.round === 1 ? .18 : .28);
+function startAtk(f, a){
+  setSt(f, "atk"); f.t = 0; f.atk = a; f.hit = false;
+  if (f === nini){
+    G.barks++;
+    if (a === NATK.special) SFX.barkBig(); else if (a.pose === "bite") SFX.bark(); else SFX.whoosh();
+    if (chat.z === 0 && ["idle", "walk"].includes(chat.st) && Math.abs(chat.x - nini.x) < 75 && Math.random() < blockChance()){
+      setSt(chat, "block"); chat.vx = 0;
+    }
+  } else if (a !== CATK.yap) SFX.whoosh();
+}
+
+// ---------- IA da chatinha (fraca de propósito) ----------
+const TAUNTS = ["AU AU AU!", "GRRR!", "O BOLO É MEU!", "CHATA? EU?"];
+function aiMode(m, t){ AI.mode = m; AI.modeT = t; }
+function ai(){
+  const c = chat, n = nini;
+  if (G.phase !== "fight" || G.superFreeze > 0 || n.st === "super"){
+    if (c.st === "walk"){ setSt(c, "idle"); c.vx = 0; }
+    return;
+  }
+  if (!["idle", "walk"].includes(c.st) || c.z > 0) return;
+  const d = Math.abs(n.x - c.x), to = Math.sign(n.x - c.x) || -1;
+  if (AI.modeT > 0){
+    AI.modeT--;
+    if (AI.mode === "approach"){ setSt(c, "walk"); c.vx = to*1.15; if (d < 40) AI.modeT = 0; }
+    else if (AI.mode === "retreat"){ setSt(c, "walk"); c.vx = -to*1.0; }
+    else { setSt(c, "idle"); c.vx = 0; }
+    return;
+  }
+  setSt(c, "idle"); c.vx = 0;
+  if (AI.cool > 0){ AI.cool--; return; }
+  const r = Math.random(), noProj = !G.proj.some(p => p.owner === c);
+  const taunt = () => { aiMode("taunt", 50); c.bubble = {txt: TAUNTS[Math.floor(Math.random()*TAUNTS.length)], t:60}; };
+  if (d > 90){
+    if (r < .55) aiMode("approach", 40 + Math.random()*30);
+    else if (r < .8 && noProj) startAtk(c, CATK.yap);
+    else if (r < .9){ setSt(c, "jump"); c.vz = 4.8; c.vx = to*1.6; }
+    else taunt();
+  } else if (d > 46){
+    if (r < .5) aiMode("approach", 20 + Math.random()*20);
+    else if (r < .7) startAtk(c, CATK.kick);
+    else if (r < .85 && noProj) startAtk(c, CATK.yap);
+    else taunt();
+  } else {
+    if (r < .42) startAtk(c, CATK.scratch);
+    else if (r < .62) startAtk(c, CATK.kick);
+    else if (r < .85) aiMode("retreat", 22 + Math.random()*15);
+    else taunt();
+  }
+  AI.cool = Math.round((24 + Math.random()*36) / (G.round === 1 ? 1 : 1.25));
+}
+
+// ---------- golpes e dano ----------
+function reach(a, b, r){
+  if (b.st === "ko") return false;
+  const dx = (b.x - a.x) * a.facing;
+  return dx > -6 && dx < r && Math.abs(a.z - b.z) < 42;
+}
+function atkUpdate(f, foe){
+  if (f.st !== "atk") return;
+  const a = f.atk;
+  if (f === chat && f.z === 0) f.vx = f.t < (a.act ? a.act[0] : 10) ? f.facing*.7 : f.vx*.6;
+  else if (f.z === 0) f.vx *= .6;
+  if (a.proj && f.t === a.proj.at) spawnProj(f, a.proj);
+  if (a.act && !f.hit && f.t >= a.act[0] && f.t <= a.act[1] && reach(f, foe, a.reach)){
+    f.hit = true;
+    doHit(f, foe, a, f.facing);
+  }
+  if (f.t >= a.total){ f.atk = null; setSt(f, f.z > 0 ? "jump" : "idle"); }
+}
+function doHit(att, def, a, dir){
+  if (def.st === "ko") return;
+  const hy = GROUND - def.z - 52;
+  if (def === chat && def.st === "block" && !a.super){
+    SFX.block();
+    spark(def.x - dir*10, hy, "#7ff3ff");
+    def.vx = dir*1.8;
+    def.hp = Math.max(1, def.hp - 1);
+    pop("BLOCK", def.x, hy - 14, "#7ff3ff");
+    return;
+  }
+  let dmg = a.dmg;
+  if (att === nini && G.rage) dmg = Math.round(dmg*1.5);
+  def.hp -= dmg;
+  if (def === nini){
+    G.perfect = false;
+    // a nini nunca perde: a vida trava em 25% e ela entra em fúria
+    if (nini.hp <= 25){ nini.hp = 25; if (!G.rage) triggerRage(); }
+    G.superM = Math.min(100, G.superM + 5);
+  } else {
+    G.hits++;
+    G.superM = Math.min(100, G.superM + (a.meter || 0));
+    chat.combo = (tick - G.lastHit < 75) ? chat.combo + 1 : 1;
+    G.lastHit = tick;
+    if (chat.combo >= 2) pop(chat.combo + " HITS!", 52, 44, "#ffd23f");
+  }
+  def.atk = null; def.bubble = null;
+  setSt(def, "hurt"); def.t = 0;
+  def.stun = a.stun || 16;
+  def.vx = dir*(a.push || 2);
+  if (a.launch) def.vz = a.launch;
+  G.hitstop = a.heavy ? 9 : 5;
+  G.shake = a.heavy ? 7 : 3;
+  spark(def.x - dir*8, hy, a.heavy ? "#ffd23f" : "#ffffff", a.heavy);
+  pop(a.txt || "POW!", def.x + dir*4, hy - 18, att === nini ? "#ff8fd0" : "#ff5a5a");
+  SFX.hit(a.heavy);
+  if (def === chat && chat.hp <= 0){ chat.hp = 0; startKO(dir); }
+}
+function triggerRage(){
+  G.rage = true; G.superM = 100; G.flash = .5;
+  SFX.rage();
+  announce("FÚRIA DA " + CONFIG.lutadora + "!", 12, 90, null, "#ffd23f");
+}
+function startKO(dir){
+  G.phase = "ko"; G.phaseT = 0;
+  setSt(chat, "ko");
+  chat.atk = null; chat.bubble = null; chat.bounced = false;
+  chat.vz = Math.max(chat.vz, 4.6); chat.vx = dir*2.6;
+  G.proj = [];
+  G.hitstop = 26; G.flash = 1; G.slowmo = 90;
+  stopMusic(); SFX.ko();
+  announce("K.O.", 32, 150, null, "ko");
+}
+function startSuper(){
+  G.superM = 0; G.superFreeze = 62; G.flash = .6;
+  setSt(nini, "super"); nini.sub = "freeze"; nini.vx = 0; nini.atk = null;
+  if (chat.z === 0 && chat.st !== "ko"){ chat.atk = null; if (chat.st !== "hurt") setSt(chat, "idle"); chat.vx = 0; }
+  G.proj = G.proj.filter(p => p.owner === nini);
+  SFX.superS();
+}
+function superUpdate(){
+  const n = nini;
+  if (n.st !== "super") return;
+  if (n.sub === "freeze"){ if (G.superFreeze <= 0){ n.sub = "dash"; n.t = 0; } return; }
+  if (n.sub === "dash"){
+    n.vx = n.facing*5.5;
+    if (tick % 3 === 0) dust(n.x - n.facing*10);
+    if (Math.abs(chat.x - n.x) < 34 || n.t > 45){
+      n.sub = "rise"; n.t = 0; n.vz = 6.2; n.vx = n.facing*1.2;
+      doHit(n, chat, SUPER_ATK, n.facing);
+    }
+  }
+}
+
+// ---------- projéteis ----------
+function spawnProj(f, p){
+  G.proj.push({owner:f, x:f.x + f.facing*24, z: f === nini ? 42 : 38, vx:f.facing*p.vx, dmg:p.dmg,
+    stun:p.stun, push:p.push, meter:p.meter || 0, kind:p.kind, txt:p.txt, t:0});
+  if (f === nini) pop("AU-DOUKEN!", f.x, GROUND - f.z - 104, "#ffd23f");
+  else { SFX.yap(); f.bubble = {txt:"AU AU AU!", t:50}; }
+}
+function projUpdate(){
+  G.proj.forEach(p => { p.t++; p.x += p.vx; });
+  const a = G.proj.find(p => p.owner === nini), b = G.proj.find(p => p.owner === chat);
+  if (a && b && Math.abs(a.x - b.x) < 14){
+    a.dead = b.dead = true;
+    spark((a.x + b.x)/2, GROUND - 40, "#ffffff");
+    SFX.block();
+  }
+  G.proj.forEach(p => {
+    if (p.dead) return;
+    const tg = p.owner === nini ? chat : nini;
+    if (tg === chat && !p.checked && Math.abs(p.x - chat.x) < 60 && chat.z === 0 && ["idle", "walk"].includes(chat.st)){
+      p.checked = true;
+      if (Math.random() < blockChance()){ setSt(chat, "block"); chat.vx = 0; }
+    }
+    if (tg.st !== "ko" && Math.abs(p.x - tg.x) < 16 && tg.z < 46){
+      p.dead = true;
+      doHit(p.owner, tg, p, Math.sign(p.vx));
+    }
+    if (p.x < -30 || p.x > VW + 30) p.dead = true;
+  });
+  G.proj = G.proj.filter(p => !p.dead);
+}
+
+// ---------- estados e física ----------
+function stateUpdate(f){
+  if (f.st === "hurt" && f.t >= f.stun && f.z === 0){
+    if (f === chat && G.phase === "fight" && (chat.combo >= 3 || (chat.hp <= 30 && !G.lowDizzy))){
+      if (chat.hp <= 30) G.lowDizzy = true;
+      chat.combo = 0;
+      setSt(chat, "dizzy");
+      pop("TONTA!", chat.x, GROUND - 112, "#ffd23f");
+    } else setSt(f, "idle");
+  }
+  if (f.st === "dizzy" && f.t > 110) setSt(f, "idle");
+  if (f.st === "block" && f.t > 26) setSt(f, "idle");
+  if (f.bubble && --f.bubble.t <= 0) f.bubble = null;
+}
+function land(f){
+  dust(f.x);
+  if (f.st === "jump"){ setSt(f, "idle"); f.vx = 0; }
+  else if (f.st === "atk" && (f.atk === NATK.jbite || f.atk === NATK.jkick)){ f.atk = null; setSt(f, "idle"); f.vx = 0; }
+  else if (f.st === "super"){ f.sub = null; setSt(f, "idle"); f.vx = 0; }
+  else if (f.st === "ko"){
+    if (!f.bounced){ f.bounced = true; f.vz = 2.4; f.vx *= .5; G.shake = 5; SFX.hit(true); }
+    else f.vx *= .3;
+  }
+}
+function physics(f){
+  if (f.z > 0 || f.vz > 0){
+    f.vz -= .3; f.z += f.vz;
+    if (f.z <= 0){ f.z = 0; f.vz = 0; land(f); }
+  }
+  f.x += f.vx;
+  if (["hurt", "ko", "dizzy", "block"].includes(f.st) && f.z === 0) f.vx *= .85;
+  if (f.st === "win" && f.z === 0) f.vx = 0;
+  f.x = Math.max(26, Math.min(VW - 26, f.x));
+}
+function pushApart(){
+  if (nini.st === "ko" || chat.st === "ko") return;
+  const dx = chat.x - nini.x, ad = Math.abs(dx);
+  if (ad < 30 && Math.abs(nini.z - chat.z) < 40){
+    const s = dx >= 0 ? 1 : -1, o = (30 - ad)/2;
+    nini.x -= s*o; chat.x += s*o;
+    nini.x = Math.max(26, Math.min(VW - 26, nini.x));
+    chat.x = Math.max(26, Math.min(VW - 26, chat.x));
+    if (Math.abs(chat.x - nini.x) < 30){
+      if (chat.x <= 26 || chat.x >= VW - 26) nini.x = chat.x - s*30;
+      else chat.x = nini.x + s*30;
+    }
+  }
+}
+function faceEach(){
+  [[nini, chat], [chat, nini]].forEach(([f, o]) => {
+    if (["idle", "walk"].includes(f.st) && f.z === 0){ const d = Math.sign(o.x - f.x); if (d) f.facing = d; }
+  });
+}
+
+// ---------- efeitos ----------
+function spark(x, y, col, big){
+  G.fx.push({k:"spark", x, y, col, t:0, life: big ? 16 : 11, big});
+  for (let i = 0; i < (big ? 12 : 6); i++){
+    const a = Math.random()*Math.PI*2, s = 1.5 + Math.random()*2.5;
+    G.fx.push({k:"px", x, y, vx:Math.cos(a)*s, vy:Math.sin(a)*s, g:.08, t:0, life:14 + Math.random()*8,
+      col: Math.random() < .5 ? col : "#ffffff"});
+  }
+}
+function pop(txt, x, y, col){ G.fx.push({k:"txt", txt, x, y, col, t:0, life:42}); }
+function dust(x){
+  for (let i = 0; i < 5; i++) G.fx.push({k:"px", x:x + Math.random()*16 - 8, y:GROUND - 1,
+    vx:(Math.random() - .5)*1.2, vy:-Math.random(), g:0, t:0, life:16, col:"#d9d2c0"});
+}
+function updateFX(){
+  G.fx.forEach(e => { e.t++; if (e.k === "px"){ e.x += e.vx; e.y += e.vy; e.vy += e.g; } if (e.k === "txt") e.y -= .45; });
+  G.fx = G.fx.filter(e => e.t < e.life);
+  if (G.rage && nini.st !== "ko" && tick % 2 === 0)
+    G.fx.push({k:"px", x:nini.x + Math.random()*36 - 18, y:GROUND - nini.z - Math.random()*70, vx:0,
+      vy:-.8 - Math.random(), g:0, t:0, life:22, col: Math.random() < .5 ? "#ffd23f" : "#ff8a1f"});
+}
+
+// ---------- loop ----------
+let spLabel = "";
+function step(){
+  tick++;
+  if (!G.on) return;
+  if (G.shake > 0){ G.shake *= .85; if (G.shake < .5) G.shake = 0; }
+  if (G.flash > 0) G.flash = Math.max(0, G.flash - .06);
+  if (G.ann && ++G.ann.t > G.ann.life) G.ann = null;
+  if (G.hitstop > 0){ G.hitstop--; return; }
+  if (G.slowmo > 0){ G.slowmo--; if (G.slowmo % 3) return; }
+  G.phaseT++;
+  phaseLogic();
+  if (G.superFreeze > 0){ G.superFreeze--; nini.t++; superUpdate(); updateFX(); return; }
+  niniControl();
+  ai();
+  [nini, chat].forEach(f => { f.t++; stateUpdate(f); });
+  atkUpdate(nini, chat);
+  atkUpdate(chat, nini);
+  superUpdate();
+  [nini, chat].forEach(physics);
+  pushApart();
+  faceEach();
+  projUpdate();
+  updateFX();
+  [nini, chat].forEach(f => { if (f.hpShow > f.hp) f.hpShow = Math.max(f.hp, f.hpShow - .5); });
+  if (G.vac < VW + 60) G.vac += 1.4;
+  const lbl = G.superM >= 100 ? "SUPER!" : "ESPECIAL";
+  if (lbl !== spLabel){ spLabel = lbl; $("spLbl").textContent = lbl; $("btnSp").classList.toggle("ready", lbl === "SUPER!"); }
+}
+
+// ---------- desenho ----------
+function txt(s, x, y, size, fill, align, stroke, lw, font){
+  ctx.font = size + "px " + (font || "'Press Start 2P'");
+  ctx.textAlign = align || "center";
+  ctx.textBaseline = "top";
+  if (stroke){ ctx.lineJoin = "round"; ctx.lineWidth = lw || 3; ctx.strokeStyle = stroke; ctx.strokeText(s, x, y); }
+  ctx.fillStyle = fill;
+  ctx.fillText(s, x, y);
+}
+function drawBunting(){
+  const cols = ["#ff5c9a", "#ffd23f", "#5fc8ff", "#6be07a", "#ff8a1f"];
+  const seg = (x0, y0, x1, y1, sag) => {
+    const at = t => [x0 + (x1 - x0)*t, y0 + (y1 - y0)*t + sag*4*t*(1 - t)];
+    ctx.fillStyle = "#f5efe0";
+    for (let i = 0; i <= 60; i++){ const [x, y] = at(i/60); ctx.fillRect(Math.round(x), Math.round(y), 2, 1); }
+    const n = Math.floor((x1 - x0)/11);
+    for (let k = 0; k < n; k++){
+      const [x, y] = at((k + .5)/n);
+      ctx.fillStyle = cols[k % cols.length];
+      for (let r = 0; r < 5; r++){ const w = 6 - r; ctx.fillRect(Math.round(x - w/2), Math.round(y + 1 + r), w, 1); }
+    }
+  };
+  seg(-4, 29, 162, 33, 5);
+  seg(158, 33, 324, 29, 5);
+}
+function drawBalloon(x, y, col, i){
+  const by = Math.round(y + Math.sin(tick/28 + i)*2);
+  ctx.fillStyle = "#e9e3d6";
+  for (let k = 0; k < 14; k++) ctx.fillRect(Math.round(x + Math.sin(k/3 + i)*1), by + 12 + k, 1, 1);
+  const rows = [4, 8, 10, 10, 10, 10, 8, 6, 4, 2];
+  ctx.fillStyle = "#1a1226";
+  rows.forEach((w, r) => ctx.fillRect(x - w/2 - 1, by + r - 1, w + 2, 3));
+  ctx.fillStyle = col;
+  rows.forEach((w, r) => ctx.fillRect(x - w/2, by + r, w, 1));
+  ctx.fillStyle = "rgba(255,255,255,.75)";
+  ctx.fillRect(x - 3, by + 2, 2, 2);
+}
+// faixa pendurada na base da sacada (o portão de enrolar fica à mostra)
+function drawSign(){
+  const x = 90, y = 55, w = 130, h = 21;
+  ctx.fillStyle = "#e9e3d6";
+  ctx.fillRect(x + 2, y - 4, 1, 4); ctx.fillRect(x + w - 3, y - 4, 1, 4);
+  ctx.fillStyle = "#1a1226"; ctx.fillRect(x - 1, y - 1, w + 2, h + 2);
+  ctx.fillStyle = "#ff7bb1"; ctx.fillRect(x, y, w, h);
+  ctx.fillStyle = "#ffd1e6"; ctx.fillRect(x, y, w, 1);
+  ctx.fillStyle = "#c94f86"; ctx.fillRect(x, y + h - 1, w, 1);
+  txt("FELIZ ANIVERSÁRIO", x + w/2, y + 3, 7, "#fff", "center", "#6d1136", 2);
+  txt(CONFIG.aniversariante + "!", x + w/2, y + 12, 7, "#ffd23f", "center", "#6d1136", 2);
+}
+function drawVac(){
+  const x = Math.round(G.vac), y = GROUND - 12;
+  if (x < -40 || x > VW + 40) return;
+  ctx.fillStyle = "rgba(0,0,0,.3)"; ctx.fillRect(x + 1, y + 10, 26, 2);
+  ctx.fillStyle = "#1d1d22"; ctx.fillRect(x, y + 1, 28, 10); ctx.fillRect(x + 3, y, 22, 1);
+  ctx.fillStyle = "#eceff2"; ctx.fillRect(x + 1, y + 2, 26, 7);
+  ctx.fillStyle = "#2b2f36"; ctx.fillRect(x + 4, y + 3, 20, 2);
+  ctx.fillStyle = "#9aa0aa"; ctx.fillRect(x + 1, y + 8, 26, 1);
+  ctx.fillStyle = (tick >> 4) % 2 ? "#5fe08a" : "#1f6b3a"; ctx.fillRect(x + 22, y + 6, 2, 1);
+  ctx.fillStyle = "#555"; ctx.fillRect(x + 27, y + 9, 3, 1);
+}
+function drawStage(){
+  if (BG){
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(BG, 0, -8, VW, 192);
+    ctx.imageSmoothingEnabled = false;
+  } else {
+    const g = ctx.createLinearGradient(0, 0, 0, GROUND);
+    g.addColorStop(0, "#5c94fc"); g.addColorStop(1, "#cfe3ff");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, VW, GROUND - 18);
+    ctx.fillStyle = "#c9c2b4"; ctx.fillRect(0, GROUND - 18, VW, 24);
+    ctx.fillStyle = "#6d6a72"; ctx.fillRect(0, GROUND + 6, VW, VH);
+  }
+  drawBunting();
+  [[80, 28, "#ff5c9a"], [90, 24, "#ffd23f"], [100, 29, "#5fc8ff"],
+   [210, 29, "#6be07a"], [220, 24, "#ff5c9a"], [230, 28, "#ffd23f"]].forEach(([x, y, c], i) => drawBalloon(x, y, c, i));
+  drawSign();
+  ctx.drawImage(miniCake[(tick >> 3) & 1].s2, 6, GROUND - 20);
+  drawVac();
+}
+function drawShadow(f){
+  const w = Math.max(10, 30 - f.z/4);
+  ctx.fillStyle = "rgba(0,0,0,.35)";
+  ctx.fillRect(Math.round(f.x - w/2), GROUND - 1, Math.round(w), 3);
+  ctx.fillRect(Math.round(f.x - w/2 + 3), GROUND - 2, Math.round(w - 6), 5);
+}
+function poseOf(f){
+  switch (f.st){
+    case "walk": return (f.t >> 3) & 1 ? "walk1" : "walk2";
+    case "jump": return "jump";
+    case "atk": return f.atk.pose;
+    case "hurt": case "dizzy": return "hurt";
+    case "block": return "block";
+    case "ko": return f.z > 0 ? "hurt" : "koLie";
+    case "win": return f.def.spr.win ? "win" : "idle1";
+    case "super": return f.sub === "rise" ? "upper" : f.sub === "dash" ? "bite" : "special";
+    default: return (tick >> 4) & 1 ? "idle2" : "idle1";
+  }
+}
+function drawFighter(f){
+  const name = poseOf(f), set = f.def.spr[name] || f.def.spr.idle1;
+  const img = f.facing > 0 ? set.r : set.l;
+  if (name === "koLie"){
+    const b = f.facing > 0 ? set.br : set.bl;
+    ctx.drawImage(img, Math.round(f.x - (b.minX + b.maxX)/2), Math.round(GROUND - f.z - b.maxY - 1));
+    return;
+  }
+  ctx.drawImage(img, Math.round(f.x - 22*S), Math.round(GROUND - f.z - SH*S));
+}
+function drawStars(f){
+  for (let k = 0; k < 3; k++){
+    const a = tick*.12 + k*2.09, x = Math.round(f.x + Math.cos(a)*16), y = Math.round(GROUND - f.z - 96 + Math.sin(a)*4);
+    ctx.fillStyle = "#1a1226"; ctx.fillRect(x - 3, y - 1, 7, 3); ctx.fillRect(x - 1, y - 3, 3, 7);
+    ctx.fillStyle = "#ffd23f"; ctx.fillRect(x - 2, y, 5, 1); ctx.fillRect(x, y - 2, 1, 5);
+  }
+}
+function drawProj(p){
+  const y = GROUND - p.z, dir = Math.sign(p.vx);
+  const cols = p.kind === "au" ? ["#ffffff", "#7ff3ff", "#ff8fd0"] : ["#ffd0d0", "#ff5a5a", "#a01830"];
+  const big = p.kind === "au" ? 1 : .7;
+  for (let k = 0; k < 3; k++){
+    const r = (5 + k*4 + ((tick % 6) < 3 ? 1 : 0)) * big;
+    ctx.fillStyle = cols[k];
+    for (let a = -.9; a <= .9; a += .18)
+      ctx.fillRect(Math.round(p.x - dir*k*3 + dir*Math.cos(a)*r), Math.round(y + Math.sin(a)*r*1.1), 2, 2);
+  }
+  txt(p.txt, p.x - dir*12, y - 4, 8, p.kind === "au" ? "#ff4fa3" : "#ff5a5a", "center", "#1a1226", 3);
+}
+function drawFX(){
+  G.fx.forEach(e => {
+    if (e.k === "px"){
+      ctx.globalAlpha = Math.max(0, 1 - e.t/e.life);
+      ctx.fillStyle = e.col; ctx.fillRect(Math.round(e.x), Math.round(e.y), 2, 2);
+    } else if (e.k === "spark"){
+      const r = 3 + e.t*(e.big ? 2.2 : 1.6), s = Math.max(1, (e.life - e.t)/2);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = e.col;
+      for (let k = 0; k < 8; k++){
+        const a = k*Math.PI/4;
+        ctx.fillRect(Math.round(e.x + Math.cos(a)*r - s/2), Math.round(e.y + Math.sin(a)*r - s/2), Math.ceil(s), Math.ceil(s));
+      }
+      if (e.t < 4){ ctx.fillStyle = "#fff"; ctx.fillRect(Math.round(e.x - 5), Math.round(e.y - 5), 10, 10); }
+    } else if (e.k === "txt"){
+      ctx.globalAlpha = Math.max(0, 1 - e.t/e.life);
+      txt(e.txt, Math.round(e.x), Math.round(e.y), 8, e.col, "center", "#1a1226", 3);
+    }
+  });
+  ctx.globalAlpha = 1;
+}
+function drawBubble(f){
+  if (!f.bubble) return;
+  ctx.font = "8px 'Press Start 2P'";
+  const w = ctx.measureText(f.bubble.txt).width + 10, h = 16;
+  const x = Math.round(Math.max(4, Math.min(VW - w - 4, f.x - w/2))), y = Math.round(GROUND - f.z - 120);
+  ctx.fillStyle = "#1a1226"; ctx.fillRect(x - 2, y - 2, w + 4, h + 4);
+  ctx.fillStyle = "#fff"; ctx.fillRect(x, y, w, h);
+  ctx.fillRect(Math.round(f.x) - 2, y + h, 5, 3);
+  txt(f.bubble.txt, x + w/2, y + 4, 8, "#1a1226");
+}
+function heart(x, y, col){
+  const rows = [".XX.XX.", "XXXXXXX", "XXXXXXX", ".XXXXX.", "..XXX..", "...X..."];
+  rows.forEach((r, j) => [...r].forEach((ch, i) => { if (ch === "X"){ ctx.fillStyle = col; ctx.fillRect(x + i, y + j, 1, 1); } }));
+}
+function drawHUD(){
+  // retratos
+  ctx.fillStyle = "#fff"; ctx.fillRect(3, 3, 24, 24); ctx.fillRect(VW - 27, 3, 24, 24);
+  ctx.fillStyle = "#120a24"; ctx.fillRect(5, 5, 20, 20); ctx.fillRect(VW - 25, 5, 20, 20);
+  ctx.drawImage(FACE.s || niniHeadFallback, 5, 5, 20, 20);
+  ctx.drawImage(chatFace, VW - 25, 5, 20, 20);
+  // barras de vida (estilo SF2)
+  const bw = 112, bh = 8;
+  [[nini, 31, false], [chat, VW - 31 - bw, true]].forEach(([f, x, right]) => {
+    ctx.fillStyle = "#fff"; ctx.fillRect(x - 1, 6, bw + 2, bh + 2);
+    ctx.fillStyle = "#6b0f1a"; ctx.fillRect(x, 7, bw, bh);
+    const ws = Math.round(bw*f.hpShow/100), w = Math.round(bw*Math.max(0, f.hp)/100);
+    ctx.fillStyle = "#ff3b3b"; ctx.fillRect(right ? x + bw - ws : x, 7, ws, bh);
+    const low = f === nini && G.rage;
+    ctx.fillStyle = low ? ((tick >> 3) & 1 ? "#ff8a1f" : "#ffd23f") : "#ffd23f";
+    ctx.fillRect(right ? x + bw - w : x, 7, w, bh);
+    ctx.fillStyle = "rgba(255,255,255,.45)"; ctx.fillRect(right ? x + bw - w : x, 7, w, 2);
+  });
+  txt(CONFIG.lutadora, 31, 18, 8, "#fff", "left", "#1a1226", 3);
+  txt(CONFIG.rival, VW - 31, 18, 8, "#fff", "right", "#1a1226", 3);
+  // relógio ∞ (igual ao do jogo dos namorados)
+  ctx.fillStyle = "#1a1226"; ctx.fillRect(VW/2 - 13, 3, 26, 22);
+  ctx.fillStyle = "#fff"; ctx.fillRect(VW/2 - 12, 4, 24, 20);
+  ctx.fillStyle = "#120a24"; ctx.fillRect(VW/2 - 11, 5, 22, 18);
+  txt("∞", VW/2, 1, 24, "#ffd23f", "center", null, 0, "VT323");
+  // rounds vencidos
+  for (let i = 0; i < 2; i++) heart(VW/2 - 26 - i*9, 18, i < G.wins ? "#ff4f7a" : "#4a3a66");
+  // barra de super
+  const sx = 6, sy = VH - 12;
+  txt("SUPER", sx, sy, 8, G.superM >= 100 ? "#ffd23f" : "#7ff3ff", "left", "#1a1226", 3);
+  ctx.fillStyle = "#fff"; ctx.fillRect(sx + 43, sy, 74, 8);
+  ctx.fillStyle = "#1a1030"; ctx.fillRect(sx + 44, sy + 1, 72, 6);
+  const full = G.superM >= 100;
+  ctx.fillStyle = full ? ["#ff5c9a", "#ffd23f", "#5fc8ff", "#6be07a"][(tick >> 2) % 4] : "#3b8bff";
+  ctx.fillRect(sx + 44, sy + 1, Math.round(72*G.superM/100), 6);
+  if (full) txt("MAX!", sx + 124, sy, 8, "#ffd23f", "left", "#1a1226", 3);
+  if (G.rage) txt("FÚRIA!", VW - 6, sy, 8, (tick >> 3) & 1 ? "#ff8a1f" : "#ffd23f", "right", "#1a1226", 3);
+}
+function drawCutIn(){
+  const k = 62 - G.superFreeze, y0 = 56, h = 60;
+  ctx.fillStyle = "#1a0630"; ctx.fillRect(0, y0, VW, h);
+  for (let i = 0; i < 14; i++){
+    const ly = y0 + 4 + ((i*37) % 52), lx = ((i*53 + k*14) % 420) - 60;
+    ctx.fillStyle = i % 2 ? "rgba(255,138,31,.55)" : "rgba(255,210,63,.45)";
+    ctx.fillRect(lx, ly, 40 + (i % 3)*20, 2);
+  }
+  ctx.fillStyle = "#ffd23f"; ctx.fillRect(0, y0, VW, 2); ctx.fillRect(0, y0 + h - 2, VW, 2);
+  const px = Math.min(18, -60 + k*9);
+  ctx.fillStyle = "#fff"; ctx.fillRect(px - 2, y0 + 4, 52, 52);
+  ctx.drawImage(FACE.cut || niniHeadFallback, px, y0 + 6, 48, 48);
+  const tx = Math.max(84, 340 - k*18);
+  const g = ctx.createLinearGradient(0, y0 + 10, 0, y0 + 50);
+  g.addColorStop(0, "#fff7b0"); g.addColorStop(.5, "#ffd23f"); g.addColorStop(1, "#ff8a1f");
+  txt("SHIH-TZU", tx, y0 + 12, 16, g, "left", "#2a0610", 5);
+  txt("RYUKEN!!", tx + 16, y0 + 34, 16, g, "left", "#2a0610", 5);
+}
+function drawAnn(){
+  const a = G.ann; if (!a) return;
+  const sc = a.t < 6 ? 1 + (6 - a.t)*.25 : 1;
+  ctx.save();
+  ctx.translate(VW/2, 104); ctx.scale(sc, sc);
+  let fill;
+  if (a.style === "ko"){
+    fill = ctx.createLinearGradient(0, -a.size/2, 0, a.size/2);
+    fill.addColorStop(0, "#fff4a8"); fill.addColorStop(.45, "#ff3b3b"); fill.addColorStop(1, "#8a0010");
+  } else if (a.style) fill = a.style;
+  else {
+    fill = ctx.createLinearGradient(0, -a.size/2, 0, a.size/2);
+    fill.addColorStop(0, "#fff7b0"); fill.addColorStop(.5, "#ffd23f"); fill.addColorStop(1, "#ff8a1f");
+  }
+  txt(a.txt, 0, -a.size/2, a.size, fill, "center", "#1a0610", Math.max(4, a.size/4));
+  if (a.sub && (a.t >> 3) & 1) txt(a.sub, 0, a.size/2 + 8, 12, "#7ff3ff", "center", "#062a3a", 4);
+  ctx.restore();
+}
+function drawHints(){
+  if (G.phase !== "fight" || G.superFreeze > 0) return;
+  if (tick - G.lastInput > 300){
+    if ((tick >> 5) & 1) txt(usingTouch ? "TOQUE NO BOTÃO A PARA MORDER!" : "APERTE Z PARA MORDER!", VW/2, 48, 8, "#fff", "center", "#1a1226", 3);
+  } else if (G.superM >= 100 && (tick >> 4) & 1){
+    txt(usingTouch ? "SUPER PRONTO! TOQUE EM SUPER!" : "SUPER PRONTO! APERTE C", VW/2, 48, 8, "#ffd23f", "center", "#1a1226", 3);
+  }
+}
+function render(){
+  if (!G.on) return;
+  ctx.setTransform(RES, 0, 0, RES, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = "#000"; ctx.fillRect(0, 0, VW, VH);
+  ctx.save();
+  if (G.shake > 0) ctx.translate(Math.round((Math.random()*2 - 1)*G.shake), Math.round((Math.random()*2 - 1)*G.shake));
+  drawStage();
+  if (G.superFreeze > 0){ ctx.fillStyle = "rgba(5,0,20,.62)"; ctx.fillRect(-10, -10, VW + 20, VH + 20); }
+  drawShadow(nini); drawShadow(chat);
+  (chat.st === "atk" ? [nini, chat] : [chat, nini]).forEach(drawFighter);
+  if (chat.st === "dizzy") drawStars(chat);
+  G.proj.forEach(drawProj);
+  drawFX();
+  drawBubble(chat);
+  ctx.restore();
+  drawHUD();
+  if (G.superFreeze > 0) drawCutIn();
+  drawAnn();
+  drawHints();
+  if (G.flash > 0){ ctx.fillStyle = "rgba(255,255,255," + Math.min(1, G.flash) + ")"; ctx.fillRect(0, 0, VW, VH); }
+}
+let lastT = performance.now(), acc = 0;
+function loop(now){
+  acc += Math.min(now - lastT, 100); lastT = now;
+  while (acc >= 1000/60){ step(); acc -= 1000/60; }
+  render();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// ============================================================
+//  FINAL: FELIZ ANIVERSÁRIO
+// ============================================================
+let blown = false, endInit = false, cakeK = 0, cakeTimer = null, smokeT = -1;
+const cakeCv = $("cakeCv");
+function drawBigCake(){
+  const x = cakeCv.getContext("2d");
+  x.clearRect(0, 0, 28, 24);
+  drawGrid(x, CAKE_BODY, CAKE_PAL, 0, 12, 1);
+  const ds = String(CONFIG.nivelNovo).slice(-2).split("");
+  const xs = ds.length === 1 ? [11] : [7, 15];
+  ds.forEach((d, i) => {
+    drawGrid(x, glitter(DIGITS[d] || DIGITS[0]), CAKE_PAL, xs[i], 4, 1);
+    x.fillStyle = "#2a140c"; x.fillRect(xs[i] + 2, 3, 2, 1);
+    if (!blown) drawGrid(x, FLAME[cakeK], CAKE_PAL, xs[i] + 1, 0, 1);
+    else if (smokeT >= 0) drawGrid(x, SMOKE[smokeT % 2], CAKE_PAL, xs[i] + 1, 0, 1);
+  });
+}
+function goEnding(){
+  G.on = false;
+  stopMusic();
+  $("arena").classList.add("hidden");
+  show("ending");
+  if (endInit) return;
+  endInit = true;
+  drawBigCake();
+  cakeTimer = setInterval(() => { cakeK ^= 1; drawBigCake(); }, 170);
+  startConfetti();
+}
+function blowCandles(){
+  if (blown) return;
+  blown = true; ac(); SFX.blow();
+  cakeCv.classList.add("out");
+  smokeT = 0;
+  clearInterval(cakeTimer);
+  cakeTimer = setInterval(() => { smokeT++; drawBigCake(); if (smokeT > 6){ smokeT = -1; drawBigCake(); clearInterval(cakeTimer); } }, 150);
+  setTimeout(() => {
+    confettiBurst(160);
+    const dur = parabens();
+    showParty(dur);
+  }, 900);
+}
+cakeCv.addEventListener("click", blowCandles);
+
+function showParty(songDur){
+  $("cakePhase").classList.add("hidden");
+  $("party").classList.remove("hidden");
+  // foto da aniversariante
+  const img = $("raquelImg"), ph = $("raquelPh");
+  img.style.display = "none";
+  img.style.objectPosition = CONFIG.focoFoto;
+  img.onload = () => { img.style.display = "block"; ph.style.display = "none"; };
+  img.onerror = () => { img.style.display = "none"; ph.style.display = "flex"; };
+  img.src = CONFIG.fotoAniversariante;
+  // nini de chapeuzinho
+  paint($("niniParty"), renderParts(NINI, NINI.poses.party, 1, SW, SH));
+  // level up: a barra enche durante o "Parabéns"
+  const xp = $("xpFill");
+  xp.style.transition = "width " + Math.max(2, songDur - .6) + "s linear";
+  requestAnimationFrame(() => requestAnimationFrame(() => { xp.style.width = "100%"; }));
+  setTimeout(() => {
+    $("lvlNum").textContent = "LV " + CONFIG.nivelAntes + " ▶ " + CONFIG.nivelNovo;
+    $("lvlUp").classList.add("on");
+    SFX.levelUp();
+    confettiBurst(120);
+  }, songDur*1000);
+  // mensagem digitada
+  const box = $("ending");
+  setTimeout(() => {
+    const el = $("endMsg"), chars = Array.from(CONFIG.mensagemFinal);
+    let i = 0;
+    (function type(){
+      el.textContent = chars.slice(0, ++i).join("");
+      const over = el.getBoundingClientRect().bottom - innerHeight + 40;
+      if (over > 0) box.scrollTop += over;
+      if (i < chars.length) setTimeout(type, 26);
+      else $("endStats").classList.remove("hidden");
+    })();
+  }, 4500);   // dá tempo de ver o título e a foto antes do texto rolar a tela
+  $("endStats").innerHTML =
+    "ROUNDS VENCIDOS: 2/2 · GOLPES: " + (G.hits || "MUITOS") + " · LATIDOS: " + (G.barks || "MUITOS") +
+    "<br>BOLOS SALVOS: 1 · " + CONFIG.rival + ": DERROTADA · AMOR: <span class='inf'>∞</span>";
+  $("endStats").classList.add("hidden");
+  setInterval(() => {
+    const f = document.createElement("div");
+    f.className = "float";
+    f.style.left = (Math.random()*100) + "%";
+    f.style.animationDuration = (5 + Math.random()*4) + "s";
+    f.textContent = ["🎈", "🎉", "💖", "🎂", "🐶", "🎈"][Math.floor(Math.random()*6)];
+    $("ending").appendChild(f);
+    setTimeout(() => f.remove(), 9500);
+  }, 900);
+  box.scrollTop = 0;
+}
+$("btnSong").addEventListener("click", function(){ this.blur(); ac(); parabens(); confettiBurst(80); });
+$("btnAgain").addEventListener("click", () => { location.href = location.pathname; });
+
+let confettiBurst = () => {};
+function startConfetti(){
+  const c = $("confetti"), x = c.getContext("2d");
+  const rs = () => { c.width = innerWidth; c.height = innerHeight; };
+  rs(); window.addEventListener("resize", rs);
+  const cols = ["#ff5c9a", "#ffd23f", "#5fc8ff", "#6be07a", "#ff8a1f", "#ffffff", "#b07bff"];
+  let parts = [];
+  confettiBurst = n => {
+    for (let i = 0; i < n; i++) parts.push({x:Math.random()*c.width, y:-10 - Math.random()*c.height*.6,
+      vx:(Math.random() - .5)*1.5, vy:1.5 + Math.random()*2.5, w:6 + Math.random()*4, h:8 + Math.random()*6,
+      a:Math.random()*6, va:.05 + Math.random()*.1, col:cols[Math.floor(Math.random()*cols.length)]});
+  };
+  setInterval(() => confettiBurst(blown ? 4 : 1), 260);
+  (function loop(){
+    x.clearRect(0, 0, c.width, c.height);
+    parts.forEach(p => {
+      p.x += p.vx + Math.sin(p.a)*.6; p.y += p.vy; p.a += p.va;
+      const w = Math.max(1, Math.abs(Math.cos(p.a))*p.w);
+      x.fillStyle = p.col;
+      x.fillRect(Math.round(p.x - w/2), Math.round(p.y), Math.round(w), Math.round(p.h/2));
+    });
+    parts = parts.filter(p => p.y < c.height + 20);
+    requestAnimationFrame(loop);
+  })();
+}
+
+// ---------- início ----------
+typeText($("storyText"), CONFIG.historia, 32);
+Promise.all([loadImg(CONFIG.fotoNini), loadImg(CONFIG.cenario)]).then(([face, bg]) => {
+  if (face){
+    const pop = "brightness(1.45) contrast(1.3) saturate(1.2)";   // a foto é escura: clareia antes de pixelar
+    FACE.s = shrink(face, 20, 20, pop); FACE.m = shrink(face, 48, 48, pop); FACE.cut = shrink(face, 24, 24, pop);
+    paintNiniFaces();
+  }
+  if (bg) BG = bg;
+});
+layout();
+// atalhos de teste: aniversario.html#final (pula pro parabéns) e #luta (pula pra luta)
+if (location.hash === "#final") goEnding();
+else if (location.hash === "#luta"){ (document.fonts ? document.fonts.ready : Promise.resolve()).then(startFight); }
+</script>
+</body>
+</html>
